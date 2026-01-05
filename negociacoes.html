@@ -1,199 +1,123 @@
-<!doctype html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Negociações</title>
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Negociações</title><link rel="stylesheet" href="assets/app.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body>
+<div class="wrap"><div class="top"><h1>Negociações</h1><div class="sub" id="who">Carregando…</div>
+<div class="nav"><a href="dashboard.html">📊</a><a href="nova.html">➕</a><a href="mapa.html">📍</a><a href="#" id="btnLogout">🚪</a></div></div>
 
-  <link rel="stylesheet" href="assets/app.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-
-<body>
-  <div class="wrap">
-    <div class="top">
-      <h1>Negociações</h1>
-      <div class="sub" id="who">Carregando…</div>
-
-      <div class="nav">
-        <a href="dashboard.html">📊</a>
-        <a href="nova.html">➕</a>
-        <a href="mapa.html">📍</a>
-        <a href="#" id="btnLogout">🚪</a>
-      </div>
-    </div>
-
-    <div class="grid2">
-      <div class="card">
-        <div class="label">Período</div>
-        <select id="period">
-          <option value="7">7d</option>
-          <option value="30" selected>30d</option>
-          <option value="90">90d</option>
-          <option value="mtd">Mês</option>
-          <option value="all">Tudo</option>
-        </select>
-      </div>
-
-      <div class="card" id="sellerCard" style="display:none">
-        <div class="label">Vendedor</div>
-        <select id="seller"></select>
-      </div>
-    </div>
-
-    <div class="grid2">
-      <div class="card">
-        <div class="label">Produto</div>
-        <select id="produto">
-          <option value="">Todos</option>
-          <option value="vegaspay">Vegas Pay</option>
-          <option value="agregados">Agregados</option>
-          <option value="cartoes">Cartões</option>
-          <option value="credenciamento">Credenciamento</option>
-          <option value="clube">Clube</option>
-        </select>
-      </div>
-
-      <div class="card">
-        <div class="label">Status</div>
-        <select id="status">
-          <option value="">Todos</option>
-          <option value="negociacao">Em negociação</option>
-          <option value="ativo">Ativo</option>
-          <option value="sem_interesse">Sem interesse</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Cliente</th>
-            <th>Produto</th>
-            <th>Status</th>
-            <th>Volume</th>
-            <th>Próxima</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-
-      <div class="small" id="empty" style="display:none;margin-top:10px">Nada encontrado.</div>
-    </div>
+<div class="grid2">
+  <div class="card"><div class="label">Período</div>
+    <select id="period"><option value="7">7d</option><option value="30" selected>30d</option><option value="90">90d</option><option value="mtd">Mês</option><option value="all">Tudo</option></select>
   </div>
+  <div class="card" id="sellerCard" style="display:none"><div class="label">Vendedor</div><select id="seller"></select></div>
+</div>
+<div class="grid2">
+  <div class="card"><div class="label">Produto</div>
+    <select id="produto"><option value="">Todos</option><option value="vegaspay">Vegas Pay</option><option value="agregados">Agregados</option><option value="cartoes">Cartões</option><option value="credenciamento">Credenciamento</option><option value="clube">Clube</option></select>
+  </div>
+  <div class="card"><div class="label">Status</div>
+    <select id="status"><option value="">Todos</option><option value="negociacao">Em negociação</option><option value="ativo">Ativo</option><option value="sem_interesse">Sem interesse</option></select>
+  </div>
+</div>
 
-  <div class="toast" id="toast"></div>
+<div class="card" style="margin-top:12px">
+<table class="table"><thead><tr><th>Cliente</th><th>Produto</th><th>Status</th><th>Volume</th><th>Próxima</th></tr></thead><tbody id="rows"></tbody></table>
+<div class="small" id="empty" style="display:none;margin-top:10px">Nada encontrado.</div>
+</div></div>
+<div class="toast" id="toast"></div>
 
-  <script type="module">
-    import { sb } from "./assets/supabaseClient.js";
-    import { ensureProfile, logout, toast, BRL, periodStart } from "./assets/app.js";
+<script type="module">
+import { sb } from "./assets/supabaseClient.js";
+import { ensureProfile, logout, toast, BRL, periodStart } from "./assets/app.js";
+const el=(id)=>document.getElementById(id);
 
-    const el = (id) => document.getElementById(id);
+const ctx=await ensureProfile(); if(!ctx) throw new Error("no session");
+const {user, prof}=ctx;
+el("who").textContent=`${prof.nome||""} • ${prof.role}`;
+el("btnLogout").addEventListener("click",(e)=>{e.preventDefault();logout();});
 
-    const ctx = await ensureProfile();
-    if (!ctx) throw new Error("no session");
+const params=new URLSearchParams(location.search);
 
-    const { user, prof } = ctx;
+// ✅ reaplica filtros ao carregar
+if(params.get("period")) el("period").value=params.get("period");
+if(params.get("produto")) el("produto").value=params.get("produto");
+if(params.get("status")) el("status").value=params.get("status");
 
-    el("who").textContent = `${prof.role}`;
-    el("btnLogout").addEventListener("click", (e) => { e.preventDefault(); logout(); });
+const pLabel=(p)=>p==="vegaspay"?"Vegas Pay":p==="agregados"?"Agregados":p==="cartoes"?"Cartões":p==="credenciamento"?"Credenciamento":"Clube";
+const sLabel=(s)=>s==="ativo"?"Ativo":(s==="negociacao"?"Em negociação":"Sem interesse");
+const fmtDate=(iso)=>iso?new Date(iso).toLocaleDateString("pt-BR"):"—";
 
-    const params = new URLSearchParams(location.search);
-    if (params.get("period")) el("period").value = params.get("period");
-    if (params.get("produto")) el("produto").value = params.get("produto");
-    if (params.get("status")) el("status").value = params.get("status");
+async function loadSellers(){
+  const {data,error}=await sb.from("profiles2").select("id,nome,role").in("role",["vendedor","gestor"]).order("nome");
+  if(error){toast("Erro vendedores");return [];} return data||[];
+}
 
-    const pLabel = (p) =>
-      p === "vegaspay" ? "Vegas Pay" :
-      p === "agregados" ? "Agregados" :
-      p === "cartoes" ? "Cartões" :
-      p === "credenciamento" ? "Credenciamento" : "Clube";
+function currentFilterQuery(){
+  const q = new URLSearchParams();
+  q.set("period", el("period").value);
+  if(el("produto").value) q.set("produto", el("produto").value);
+  if(el("status").value) q.set("status", el("status").value);
+  if(prof.role!=="vendedor"){
+    const seller = el("seller")?.value || params.get("seller") || "";
+    if(seller) q.set("seller", seller);
+  }
+  return q.toString();
+}
 
-    const sLabel = (s) =>
-      s === "ativo" ? "Ativo" :
-      (s === "negociacao" ? "Em negociação" : "Sem interesse");
+async function query(){
+  const start=periodStart(el("period").value).toISOString();
+  let q=sb.from("actions")
+    .select("id,cliente_nome,produto,status,volume,prox_acao,prox_data,user_id,updated_at")
+    .gte("updated_at",start)
+    .order("updated_at",{ascending:false});
 
-    const fmtDate = (iso) => iso ? new Date(iso).toLocaleDateString("pt-BR") : "—";
+  if(prof.role==="vendedor") q=q.eq("user_id", user.id);
+  else{
+    const chosen = el("seller").value || params.get("seller") || "";
+    if(chosen) q=q.eq("user_id", chosen);
+  }
 
-    async function loadSellers() {
-      // ✅ usando profiles2 (alinhado com seu projeto)
-      const { data, error } = await sb
-        .from("profiles2")
-        .select("id,nome,role")
-        .in("role", ["vendedor", "gestor"])
-        .order("nome");
+  if(el("produto").value) q=q.eq("produto", el("produto").value);
+  if(el("status").value) q=q.eq("status", el("status").value);
 
-      if (error) { toast("Erro vendedores: " + error.message); return []; }
-      return data || [];
-    }
+  const {data,error}=await q;
+  if(error){toast("Erro: "+error.message); return [];}
+  return data||[];
+}
 
-    async function query() {
-      const start = periodStart(el("period").value).toISOString();
+function abrirDetalhe(id){
+  const qs = currentFilterQuery();
+  window.location.href = `detalhe.html?id=${id}&${qs}`;
+}
 
-      // ✅ IMPORTANTE: inclui id aqui
-      let q = sb
-        .from("actions")
-        .select("id,cliente_nome,produto,status,volume,prox_acao,prox_data,user_id,updated_at")
-        .gte("updated_at", start)
-        .order("updated_at", { ascending: false });
+function renderRows(list){
+  el("rows").innerHTML=list.map(r=>`
+    <tr style="cursor:pointer" data-id="${r.id}">
+      <td><b>${r.cliente_nome}</b></td>
+      <td>${pLabel(r.produto)}</td>
+      <td>${sLabel(r.status)}</td>
+      <td>${BRL(Number(r.volume)||0)}</td>
+      <td>${r.prox_acao?`${r.prox_acao} • ${fmtDate(r.prox_data)}`:"—"}</td>
+    </tr>`).join("");
 
-      if (prof.role === "vendedor") {
-        q = q.eq("user_id", user.id);
-      } else {
-        const chosen = el("seller")?.value || params.get("seller") || "";
-        if (chosen) q = q.eq("user_id", chosen);
-      }
+  // ✅ binding de clique sem inline onclick (mais limpo)
+  [...el("rows").querySelectorAll("tr[data-id]")].forEach(tr=>{
+    tr.addEventListener("click", ()=>abrirDetalhe(tr.dataset.id));
+  });
 
-      if (el("produto").value) q = q.eq("produto", el("produto").value);
-      if (el("status").value) q = q.eq("status", el("status").value);
+  el("empty").style.display=list.length?"none":"block";
+}
 
-      const { data, error } = await q;
-      if (error) { toast("Erro: " + error.message); return []; }
-      return data || [];
-    }
+async function render(){ renderRows(await query()); }
 
-    function abrirDetalhe(id) {
-      window.location.href = `detalhe.html?id=${encodeURIComponent(id)}`;
-    }
-    // ✅ expõe pro onclick funcionar com script module
-    window.abrirDetalhe = abrirDetalhe;
+if(prof.role!=="vendedor"){
+  el("sellerCard").style.display="block";
+  const sellers=await loadSellers();
+  el("seller").innerHTML=`<option value="">Todos</option>`+sellers.map(s=>`<option value="${s.id}">${s.nome||s.id}</option>`).join("");
+  if(params.get("seller")) el("seller").value=params.get("seller");
+  el("seller").addEventListener("change", render);
+}
 
-    function renderRows(list) {
-      el("rows").innerHTML = list.map(r => `
-        <tr onclick="abrirDetalhe('${r.id}')" style="cursor:pointer">
-          <td><b>${r.cliente_nome}</b></td>
-          <td>${pLabel(r.produto)}</td>
-          <td>${sLabel(r.status)}</td>
-          <td>${BRL(Number(r.volume) || 0)}</td>
-          <td>${r.prox_acao ? `${r.prox_acao} • ${fmtDate(r.prox_data)}` : "—"}</td>
-        </tr>
-      `).join("");
-
-      el("empty").style.display = list.length ? "none" : "block";
-    }
-
-    async function render() {
-      renderRows(await query());
-    }
-
-    // Gestor/adm escolhe vendedor
-    if (prof.role !== "vendedor") {
-      el("sellerCard").style.display = "block";
-      const sellers = await loadSellers();
-      el("seller").innerHTML =
-        `<option value="">Todos</option>` +
-        sellers.map(s => `<option value="${s.id}">${s.nome || s.id}</option>`).join("");
-
-      if (params.get("seller")) el("seller").value = params.get("seller");
-      el("seller").addEventListener("change", render);
-    }
-
-    ["period", "produto", "status"].forEach(id =>
-      el(id).addEventListener("change", render)
-    );
-
-    await render();
-  </script>
-</body>
-</html>
+["period","produto","status"].forEach(id=>el(id).addEventListener("change", render));
+await render();
+</script>
+</body></html>
