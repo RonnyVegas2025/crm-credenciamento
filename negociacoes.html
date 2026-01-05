@@ -73,6 +73,10 @@ function renderRows(list){
 
 async function render(){ renderRows(await query()); }
 
+function abrirDetalhe(id){
+  window.location.href = `detalhe.html?id=${id}`;
+}
+
 if(prof.role!=="vendedor"){
   el("sellerCard").style.display="block";
   const sellers=await loadSellers();
@@ -80,11 +84,10 @@ if(prof.role!=="vendedor"){
   if(params.get("seller")) el("seller").value=params.get("seller");
   el("seller").addEventListener("change", render);
 }
+
 ["period","produto","status"].forEach(id=>el(id).addEventListener("change", render));
 await render();
- 
-function abrirDetalhe(id){
-    window.location.href = `detalhe.html?id=${id}`;
+
   }
 
 </script></body></html>
