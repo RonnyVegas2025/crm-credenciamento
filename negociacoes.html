@@ -82,4 +82,9 @@ if(prof.role!=="vendedor"){
 }
 ["period","produto","status"].forEach(id=>el(id).addEventListener("change", render));
 await render();
+ 
+function abrirDetalhe(id){
+    window.location.href = `detalhe.html?id=${id}`;
+  }
+
 </script></body></html>
