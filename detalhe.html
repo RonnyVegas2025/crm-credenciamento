@@ -1,37 +1,322 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!doctype html>
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <title>Detalhe da Negociação</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Detalhe</title>
 
-  <!-- Estilo básico só para teste -->
+  <link rel="stylesheet" href="assets/app.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    body {
-      background: #0b132b;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      padding: 24px;
+    .grid3{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:900px){.grid3{grid-template-columns:1fr}}
+    .rowBtns{display:flex;gap:10px;flex-wrap:wrap}
+    .btnMini{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      color:#fff;
+      font-weight:700;
     }
-    .card {
-      background: #1c2541;
-      border-radius: 12px;
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
+    .btnMini:hover{background:rgba(255,255,255,.10)}
+    .btnPrimary{
+      width:100%;
+      padding:14px 16px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:900;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(80,170,255,.18);
+      color:#fff;
+    }
+    .btnDanger{
+      width:100%;
+      padding:14px 16px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:900;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,80,80,.18);
+      color:#fff;
+    }
+    .muted{opacity:.8}
+    .small2{font-size:12px;opacity:.75}
+    .hr{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
+    input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+      color:#fff;
+      outline:none;
+    }
+    textarea{min-height:110px;resize:vertical}
+    .label{font-size:12px;opacity:.75;margin-bottom:8px}
+    .titleLine{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .pill{
+      padding:8px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      font-weight:800;
     }
   </style>
 </head>
-<body>
 
-  <div class="card">
-    <h1>Detalhe da Negociação</h1>
-    <p>Cliente: <strong id="cliente">Carregando...</strong></p>
-    <p>Produto: <strong id="produto">—</strong></p>
-    <p>Status: <strong id="status">—</strong></p>
-    <p>Volume: <strong id="volume">—</strong></p>
-    <p>Próxima ação: <strong id="proxima">—</strong></p>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="titleLine">
+        <div>
+          <h1>Detalhe</h1>
+          <div class="sub" id="who">Carregando…</div>
+        </div>
+
+        <div class="nav">
+          <a href="dashboard.html">📊</a>
+          <a href="negociacoes.html">📋</a>
+          <a href="nova.html">➕</a>
+          <a href="mapa.html">📍</a>
+          <a href="#" id="btnLogout">🚪</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="titleLine">
+        <div>
+          <div class="label">Cliente</div>
+          <div style="font-size:20px;font-weight:900" id="clienteTitulo">—</div>
+          <div class="small2" id="metaLinha">—</div>
+        </div>
+        <div class="pill" id="statusPill">status: —</div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="grid3">
+        <div>
+          <div class="label">Produto</div>
+          <select id="produto">
+            <option value="vegaspay">Vegas Pay</option>
+            <option value="agregados">Agregados</option>
+            <option value="cartoes">Cartões</option>
+            <option value="credenciamento">Credenciamento</option>
+            <option value="clube">Clube</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="label">Status</div>
+          <select id="status">
+            <option value="negociacao">Em negociação</option>
+            <option value="ativo">Ativo</option>
+            <option value="sem_interesse">Sem interesse</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="label">Volume (R$)</div>
+          <input id="volume" inputmode="decimal" placeholder="Ex: 25000">
+          <div class="small2 muted">Dica: pode digitar 25000 (sem ponto/vírgula) 😉</div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="label">Observações</div>
+        <textarea id="obs" placeholder="Digite as observações..."></textarea>
+      </div>
+
+      <div class="grid3" style="margin-top:12px">
+        <div>
+          <div class="label">Próxima ação</div>
+          <input id="prox_acao" placeholder="Ex: Enviar proposta">
+        </div>
+        <div>
+          <div class="label">Data</div>
+          <input id="prox_data" type="date">
+        </div>
+        <div>
+          <div class="label">Cidade</div>
+          <input id="cidade" placeholder="Ex: Americana">
+        </div>
+      </div>
+
+      <div style="margin-top:14px">
+        <div class="label">Atalhos de status</div>
+        <div class="rowBtns">
+          <button class="btnMini" id="btnNeg">Em negociação</button>
+          <button class="btnMini" id="btnAtv">Ativo</button>
+          <button class="btnMini" id="btnSem">Sem interesse</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="grid3">
+        <button class="btnPrimary" id="btnSalvar">Salvar alterações</button>
+        <button class="btnDanger" id="btnExcluir">Excluir registro</button>
+        <div class="small2 muted" id="debugInfo" style="align-self:center">—</div>
+      </div>
+    </div>
   </div>
 
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { sb } from "./assets/supabaseClient.js";
+    import { ensureProfile, logout, toast, BRL } from "./assets/app.js";
+
+    const el = (id) => document.getElementById(id);
+
+    // 1) pega o id da URL
+    const params = new URLSearchParams(location.search);
+    const actionId = params.get("id");
+
+    if (!actionId) {
+      toast("Sem ID na URL (faltou ?id=...)");
+      el("debugInfo").textContent = "Sem ?id= na URL";
+      throw new Error("missing id");
+    }
+
+    // 2) garante login + perfil
+    const ctx = await ensureProfile();
+    if (!ctx) throw new Error("no session");
+    const { user, prof } = ctx;
+
+    el("who").textContent = `${prof.nome || user.email} • ${prof.role}`;
+    el("btnLogout").addEventListener("click", (e)=>{ e.preventDefault(); logout(); });
+
+    // 3) helpers de label
+    const pLabel = (p) =>
+      p === "vegaspay" ? "Vegas Pay" :
+      p === "agregados" ? "Agregados" :
+      p === "cartoes" ? "Cartões" :
+      p === "credenciamento" ? "Credenciamento" : "Clube";
+
+    const sLabel = (s) =>
+      s === "ativo" ? "Ativo" :
+      s === "negociacao" ? "Em negociação" : "Sem interesse";
+
+    // 4) carrega registro
+    let row = null;
+
+    async function carregar() {
+      const { data, error } = await sb
+        .from("actions")
+        .select("*")
+        .eq("id", actionId)
+        .single();
+
+      if (error) {
+        toast("Erro ao carregar: " + error.message);
+        el("debugInfo").textContent = "Erro load: " + error.message;
+        return;
+      }
+
+      row = data;
+
+      // Preenche UI
+      el("clienteTitulo").textContent = row.cliente_nome || "—";
+      el("metaLinha").textContent = `${pLabel(row.produto)} • ${row.cidade || "—"} • ID: ${row.id}`;
+      el("statusPill").textContent = `status: ${sLabel(row.status)}`;
+
+      el("produto").value = row.produto || "vegaspay";
+      el("status").value = row.status || "negociacao";
+      el("volume").value = (row.volume ?? "").toString();
+
+      el("obs").value = row.obs || row.observacoes || ""; // (compatível caso o nome seja outro)
+      el("prox_acao").value = row.prox_acao || "";
+      el("cidade").value = row.cidade || "";
+
+      // prox_data ISO -> yyyy-mm-dd
+      if (row.prox_data) {
+        const d = new Date(row.prox_data);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth()+1).padStart(2,"0");
+        const dd = String(d.getDate()).padStart(2,"0");
+        el("prox_data").value = `${yyyy}-${mm}-${dd}`;
+      } else {
+        el("prox_data").value = "";
+      }
+
+      el("debugInfo").textContent = "Carregado ✅";
+    }
+
+    // 5) salvar
+    function parseVolume(v) {
+      if (!v) return 0;
+      // aceita "25.000,50" ou "25000"
+      const cleaned = v.toString().replace(/\./g,"").replace(",",".").replace(/[^\d.]/g,"");
+      const n = Number(cleaned);
+      return isNaN(n) ? 0 : n;
+    }
+
+    async function salvar() {
+      if (!row) return;
+
+      const payload = {
+        produto: el("produto").value,
+        status: el("status").value,
+        volume: parseVolume(el("volume").value),
+        prox_acao: el("prox_acao").value || null,
+        prox_data: el("prox_data").value ? new Date(el("prox_data").value).toISOString() : null,
+        cidade: el("cidade").value || null,
+        // usa obs (se sua tabela for "obs") – se for outro nome, me fala que eu ajusto
+        obs: el("obs").value || null,
+        updated_at: new Date().toISOString()
+      };
+
+      // vendedor só pode salvar o que é dele (RLS vai segurar)
+      const { error } = await sb
+        .from("actions")
+        .update(payload)
+        .eq("id", actionId);
+
+      if (error) {
+        toast("Erro ao salvar: " + error.message);
+        el("debugInfo").textContent = "Erro save: " + error.message;
+        return;
+      }
+
+      toast("Salvo ✅");
+      el("debugInfo").textContent = `Salvo ✅ Volume: ${BRL(payload.volume)}`;
+      await carregar();
+    }
+
+    // 6) excluir
+    async function excluir() {
+      if (!confirm("Quer excluir esse registro mesmo?")) return;
+
+      const { error } = await sb
+        .from("actions")
+        .delete()
+        .eq("id", actionId);
+
+      if (error) {
+        toast("Erro ao excluir: " + error.message);
+        el("debugInfo").textContent = "Erro delete: " + error.message;
+        return;
+      }
+
+      toast("Excluído ✅");
+      window.location.href = "negociacoes.html";
+    }
+
+    // 7) atalhos status
+    el("btnNeg").addEventListener("click", ()=>{ el("status").value="negociacao"; el("statusPill").textContent="status: Em negociação"; });
+    el("btnAtv").addEventListener("click", ()=>{ el("status").value="ativo"; el("statusPill").textContent="status: Ativo"; });
+    el("btnSem").addEventListener("click", ()=>{ el("status").value="sem_interesse"; el("statusPill").textContent="status: Sem interesse"; });
+
+    // botões
+    el("btnSalvar").addEventListener("click", salvar);
+    el("btnExcluir").addEventListener("click", excluir);
+
+    // vai
+    await carregar();
+  </script>
 </body>
 </html>
-
