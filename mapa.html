@@ -1,0 +1,64 @@
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Mapa / Check-in</title><link rel="stylesheet" href="assets/app.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body>
+<div class="wrap"><div class="top"><h1>Mapa / Check-in</h1><div class="sub">Grava em checkins. Faixas: ✅ ≤ 80m | ⚠️ ≤ 200m | ❌ &gt; 200m</div>
+<div class="nav"><a href="dashboard.html">📊</a><a href="nova.html">➕</a><a href="negociacoes.html">📋</a><a href="#" id="btnLogout">🚪</a></div></div>
+
+<div class="grid2">
+  <div class="card">
+    <button class="btn primary" id="cap">📍 Capturar</button>
+    <div class="chips" style="margin-top:12px">
+      <button class="chip" type="button" id="pres" aria-pressed="true">Presencial</button>
+      <button class="chip" type="button" id="rem" aria-pressed="false">Remota</button>
+    </div>
+    <div style="margin-top:12px" id="status"><span class="pill warn"><span class="dot"></span> Aguardando</span></div>
+    <div class="row"><div><div class="label">Precisão</div><div class="value" id="acc">—</div></div><div style="text-align:right"><div class="label">Data/hora</div><div class="value" id="dt">—</div></div></div>
+    <div class="row"><div><div class="label">Coord</div><div class="value" id="coord">—</div></div><div style="text-align:right"><div class="label">Maps</div><div class="value" id="link">—</div></div></div>
+  </div>
+  <div class="card"><div class="value">Últimos check-ins</div><div id="list" style="margin-top:10px"></div></div>
+</div></div>
+<div class="toast" id="toast"></div>
+<script type="module">
+import { sb } from "./assets/supabaseClient.js";
+import { ensureProfile, logout, toast } from "./assets/app.js";
+const el=(id)=>document.getElementById(id);
+const ctx=await ensureProfile(); if(!ctx) throw new Error("no session");
+const {user}=ctx;
+el("btnLogout").addEventListener("click",(e)=>{e.preventDefault();logout();});
+let mode="presencial";
+function setMode(m){mode=m; el("pres").setAttribute("aria-pressed", m==="presencial"); el("rem").setAttribute("aria-pressed", m==="remota");}
+el("pres").addEventListener("click",()=>setMode("presencial"));
+el("rem").addEventListener("click",()=>setMode("remota"));
+
+function pill(kind,text){return `<span class="pill ${kind}"><span class="dot"></span> ${text}</span>`;}
+function kind(acc){ if(mode==="remota") return ["ok","Não obrigatório"];
+  if(acc<=80) return ["ok","Válido"]; if(acc<=200) return ["warn","Atenção"]; return ["bad","Inválido"]; }
+
+async function loadLast(){
+  const {data,error}=await sb.from("checkins").select("created_at,accuracy_m,mode").eq("user_id", user.id).order("created_at",{ascending:false}).limit(10);
+  if(error){toast("Erro listagem: "+error.message); return;}
+  el("list").innerHTML=(data||[]).map(c=>{
+    const k = c.mode==="remota" ? ["ok","Remota"] : (c.accuracy_m<=80?["ok","Válido"]:(c.accuracy_m<=200?["warn","Atenção"]:["bad","Inválido"]));
+    return `<div class="row"><div><div class="value">${k[1]}</div><div class="small">${new Date(c.created_at).toLocaleString("pt-BR")}</div></div>
+      <div style="text-align:right"><span class="pill ${k[0]}"><span class="dot"></span> ${Math.round(c.accuracy_m)}m</span></div></div>`;
+  }).join("") || `<div class="small">Nenhum check-in.</div>`;
+}
+
+el("cap").addEventListener("click", ()=>{
+  if(!navigator.geolocation){toast("Sem geolocalização."); return;}
+  navigator.geolocation.getCurrentPosition(async (pos)=>{
+    const lat=pos.coords.latitude, lon=pos.coords.longitude, acc=pos.coords.accuracy;
+    el("acc").textContent=Math.round(acc)+" m";
+    el("dt").textContent=new Date().toLocaleString("pt-BR");
+    el("coord").textContent=lat.toFixed(5)+", "+lon.toFixed(5);
+    const url="https://maps.google.com/?q="+lat.toFixed(5)+","+lon.toFixed(5);
+    el("link").innerHTML=`<a href="${url}" target="_blank" rel="noopener">Abrir</a>`;
+    const [k,t]=kind(acc); el("status").innerHTML=pill(k,t);
+    const {error}=await sb.from("checkins").insert({user_id:user.id, mode, lat, lon, accuracy_m: acc});
+    if(error){toast("Erro gravar: "+error.message); return;}
+    toast("Check-in salvo ✅"); await loadLast();
+  }, (err)=>toast(err.message), {enableHighAccuracy:true,timeout:12000});
+});
+
+await loadLast();
+</script></body></html>

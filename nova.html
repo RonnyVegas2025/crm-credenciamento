@@ -1,0 +1,137 @@
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Nova ação</title><link rel="stylesheet" href="assets/app.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>.actionsFixed{position:fixed;bottom:0;left:0;right:0;background:rgba(11,21,38,.92);border-top:1px solid rgba(148,163,184,.18);padding:12px;display:flex;gap:10px}.padBottom{padding-bottom:96px}</style>
+</head><body>
+<div class="wrap padBottom"><div class="top"><h1>Nova ação</h1><div class="sub">Salva em actions (Supabase).</div>
+<div class="nav"><a href="dashboard.html">📊</a><a href="negociacoes.html">📋</a><a href="mapa.html">📍</a><a href="#" id="btnLogout">🚪</a></div></div>
+
+<div class="grid">
+  <div class="card">
+    <div class="value">Cliente *</div>
+    <div class="label">Nome</div><input id="cliente" placeholder="Ex: Mercado Central">
+    <div class="grid2" style="margin-top:8px">
+      <div><div class="label">Cidade</div><input id="cidade" placeholder="Ex: Campinas"></div>
+      <div><div class="label">CNPJ (opcional)</div><input id="cnpj"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="value">Produto *</div>
+    <select id="produto">
+      <option value="">Selecione</option>
+      <option value="vegaspay">Vegas Pay</option>
+      <option value="agregados">Agregados</option>
+      <option value="cartoes">Cartões</option>
+      <option value="credenciamento">Credenciamento</option>
+      <option value="clube">Clube Vantagens</option>
+    </select>
+    <div class="small">MVP: detalhes mínimos + status.</div>
+  </div>
+
+  <div class="card" id="det" style="display:none">
+    <div class="value">Status *</div>
+    <div class="chips" id="st">
+      <button class="chip" type="button" data-value="negociacao">Em negociação</button>
+      <button class="chip" type="button" data-value="ativo">Fechado</button>
+      <button class="chip" type="button" data-value="sem_interesse">Sem interesse</button>
+    </div>
+    <div class="grid2" style="margin-top:10px">
+      <div><div class="label">Volume (R$)</div><input id="volume" inputmode="decimal" placeholder="Ex: 120000"></div>
+      <div><div class="label">Qtd (licenças/cartões)</div><input id="qtd" inputmode="numeric" placeholder="Ex: 20"></div>
+    </div>
+    <div class="label" style="margin-top:10px">Observações</div><textarea id="obs" placeholder="Resumo da negociação"></textarea>
+  </div>
+
+  <div class="card" id="prox" style="display:none">
+    <div class="value">Próxima ação <span id="req" style="color:var(--bad);display:none">*</span></div>
+    <div class="label">Ação</div><input id="proxAcao" placeholder="Ex: Ligar / Visitar / Enviar proposta">
+    <div class="label">Data</div><input id="proxData" type="date">
+  </div>
+
+  <div class="card">
+    <div class="value">Localização (opcional)</div>
+    <button class="btn ghost" id="btnGeo">📍 Capturar</button>
+    <div class="small" id="geo">—</div>
+  </div>
+</div></div>
+
+<div class="actionsFixed">
+  <button class="btn primary" id="save">Salvar</button>
+  <button class="btn green" id="saveNew">Salvar + Nova</button>
+</div>
+
+<div class="toast" id="toast"></div>
+<script type="module">
+import { sb } from "./assets/supabaseClient.js";
+import { ensureProfile, logout, toast, bindChipGroup } from "./assets/app.js";
+const el=(id)=>document.getElementById(id);
+const {user, prof}=await ensureProfile(); if(!user) throw new Error("no session");
+el("btnLogout").addEventListener("click",(e)=>{e.preventDefault();logout();});
+
+let geo=null;
+el("btnGeo").addEventListener("click", ()=>{
+  if(!navigator.geolocation){toast("Sem geolocalização."); return;}
+  navigator.geolocation.getCurrentPosition((pos)=>{
+    geo={lat:pos.coords.latitude, lon:pos.coords.longitude, acc:pos.coords.accuracy};
+    el("geo").textContent=`✔ ${geo.lat.toFixed(5)}, ${geo.lon.toFixed(5)} • ~${Math.round(geo.acc)}m`;
+  }, (err)=>toast(err.message), {enableHighAccuracy:true,timeout:12000});
+});
+
+bindChipGroup("st", ()=>updateReq());
+
+const d=new Date(); d.setDate(d.getDate()+2); el("proxData").value=d.toISOString().slice(0,10);
+
+el("produto").addEventListener("change", ()=>{
+  const p=el("produto").value;
+  el("det").style.display=p?"block":"none";
+  el("prox").style.display=p?"block":"none";
+  updateReq();
+});
+
+function updateReq(){
+  const st=document.getElementById("st").dataset.value||"";
+  const req = st && st!=="ativo";
+  el("req").style.display=req?"inline":"none";
+  return req;
+}
+
+function num(v){const s=(v||"").toString().replace(/[^\d.,]/g,"").replace(".","").replace(",","."); const n=Number(s); return isFinite(n)?n:0;}
+
+async function ensureClient(nome,cidade,cnpj){
+  const {data:ex}=await sb.from("clients").select("id").eq("nome",nome).eq("cidade",cidade||"").maybeSingle();
+  if(ex?.id) return ex.id;
+  const {data, error}=await sb.from("clients").insert({nome,cidade:cidade||"",cnpj:cnpj||"",created_by:user.id}).select("id").single();
+  if(error) throw error; return data.id;
+}
+
+async function save(reset){
+  const cliente=el("cliente").value.trim(), produto=el("produto").value;
+  const status=document.getElementById("st").dataset.value||"";
+  if(!cliente||!produto||!status){toast("Preencha Cliente, Produto e Status."); return;}
+  const req=updateReq();
+  if(req && (!el("proxAcao").value.trim() || !el("proxData").value)){toast("Informe a próxima ação."); return;}
+
+  let client_id=null;
+  try{client_id=await ensureClient(cliente, el("cidade").value.trim(), el("cnpj").value.trim());}
+  catch(e){toast("Erro cliente: "+e.message); return;}
+
+  const payload={
+    user_id:user.id, client_id, cliente_nome:cliente, cidade:el("cidade").value.trim(),
+    produto, status, prox_acao:el("proxAcao").value.trim(), prox_data:el("proxData").value||null,
+    volume:num(el("volume").value), licencas: produto==="agregados"?num(el("qtd").value):0,
+    cartoes_qtd: produto==="cartoes"?num(el("qtd").value):0,
+    detalhes:{obs:el("obs").value.trim()}, geo
+  };
+  const {error}=await sb.from("actions").insert(payload);
+  if(error){toast("Erro ação: "+error.message); return;}
+  toast("Salvo ✅");
+  if(reset){
+    el("produto").value=""; el("det").style.display="none"; el("prox").style.display="none";
+    document.getElementById("st").dataset.value=""; document.querySelectorAll("#st .chip").forEach(b=>b.setAttribute("aria-pressed","false"));
+    el("volume").value=""; el("qtd").value=""; el("obs").value=""; el("proxAcao").value=""; geo=null; el("geo").textContent="—";
+  }else location.href="negociacoes.html";
+}
+el("save").addEventListener("click", ()=>save(false));
+el("saveNew").addEventListener("click", ()=>save(true));
+</script></body></html>

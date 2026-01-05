@@ -1,0 +1,39 @@
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CRM Vegas – Login</title><link rel="stylesheet" href="assets/app.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body>
+<div class="wrap"><div class="top"><h1>CRM Credenciamento Vegas</h1><div class="sub">MVP real com Supabase (Auth + Banco). Use seu e-mail como UserID.</div></div>
+<div class="grid2">
+  <div class="card">
+    <div class="value">Entrar</div><div class="small">Crie usuários no Supabase Auth (email/senha) e crie o perfil na tabela profiles2.</div><div style="height:10px"></div>
+    <div class="label">UserID (e-mail)</div><input id="email" placeholder="seuemail@empresa.com">
+    <div class="label">Senha</div><input id="password" type="password" placeholder="••••••••">
+    <div style="display:grid;gap:10px;margin-top:12px">
+      <button class="btn primary" id="btnLogin">Entrar</button>
+      <button class="btn ghost" id="btnHelp">Checklist Supabase</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="value">Checklist</div>
+    <ol class="small" style="margin:8px 0 0 18px;line-height:1.6">
+      <li>Cole URL + anon key em <b>assets/supabaseClient.js</b></li>
+      <li>Rode <b>supabase_schema.sql</b> no SQL Editor</li>
+      <li>Auth → Users → crie emails/senhas</li>
+      <li>profiles2 → insert (id=user.id, role=vendedor|gestor|adm)</li>
+    </ol>
+  </div>
+</div></div>
+<div class="toast" id="toast"></div>
+<script type="module">
+import { sb } from "./assets/supabaseClient.js";
+import { toast } from "./assets/app.js";
+const el=(id)=>document.getElementById(id);
+document.getElementById("btnHelp").addEventListener("click",()=>toast("Abra supabase_schema.sql e rode no Supabase SQL Editor."));
+document.getElementById("btnLogin").addEventListener("click", async ()=>{
+  const email=el("email").value.trim(), password=el("password").value;
+  if(!email||!password){toast("Preencha e-mail e senha."); return;}
+  const {error}=await sb.auth.signInWithPassword({email,password});
+  if(error){toast("Login falhou: "+error.message); return;}
+  location.href="dashboard.html";
+});
+const {data}=await sb.auth.getSession(); if(data.session) location.href="dashboard.html";
+</script></body></html>
