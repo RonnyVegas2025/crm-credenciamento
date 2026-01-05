@@ -4,100 +4,41 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Detalhe</title>
-
   <link rel="stylesheet" href="assets/app.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    .grid3{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
-    @media (max-width:900px){.grid3{grid-template-columns:1fr}}
-    .rowBtns{display:flex;gap:10px;flex-wrap:wrap}
-    .btnMini{
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      color:#fff;
-      font-weight:700;
-    }
-    .btnMini:hover{background:rgba(255,255,255,.10)}
-    .btnPrimary{
-      width:100%;
-      padding:14px 16px;
-      border-radius:14px;
-      cursor:pointer;
-      font-weight:900;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(80,170,255,.18);
-      color:#fff;
-    }
-    .btnDanger{
-      width:100%;
-      padding:14px 16px;
-      border-radius:14px;
-      cursor:pointer;
-      font-weight:900;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,80,80,.18);
-      color:#fff;
-    }
-    .muted{opacity:.8}
-    .small2{font-size:12px;opacity:.75}
-    .hr{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
-    input, select, textarea{
-      width:100%;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      color:#fff;
-      outline:none;
-    }
-    textarea{min-height:110px;resize:vertical}
-    .label{font-size:12px;opacity:.75;margin-bottom:8px}
-    .titleLine{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    .pill{
-      padding:8px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);
-      font-weight:800;
-    }
-  </style>
 </head>
 
 <body>
   <div class="wrap">
     <div class="top">
-      <div class="titleLine">
-        <div>
-          <h1>Detalhe</h1>
-          <div class="sub" id="who">Carregando…</div>
-        </div>
+      <h1>Detalhe da Negociação</h1>
+      <div class="sub" id="who">Carregando…</div>
 
-        <div class="nav">
-          <a href="dashboard.html">📊</a>
-          <a href="negociacoes.html">📋</a>
-          <a href="nova.html">➕</a>
-          <a href="mapa.html">📍</a>
-          <a href="#" id="btnLogout">🚪</a>
-        </div>
+      <div class="nav">
+        <a href="dashboard.html">📊</a>
+        <a href="nova.html">➕</a>
+        <a href="negociacoes.html">📋</a>
+        <a href="mapa.html">📍</a>
+        <a href="#" id="btnLogout">🚪</a>
       </div>
     </div>
 
-    <div class="card">
-      <div class="titleLine">
+    <div class="card" style="margin-top:12px">
+      <div class="grid2">
         <div>
           <div class="label">Cliente</div>
-          <div style="font-size:20px;font-weight:900" id="clienteTitulo">—</div>
-          <div class="small2" id="metaLinha">—</div>
+          <div id="cliente_nome" style="font-weight:700">Carregando…</div>
+          <div class="small" id="cliente_meta"></div>
         </div>
-        <div class="pill" id="statusPill">status: —</div>
+
+        <div style="text-align:right">
+          <a class="btn" href="negociacoes.html" id="btnVoltar">← Voltar</a>
+        </div>
       </div>
 
-      <div class="hr"></div>
+      <div style="height:12px"></div>
 
-      <div class="grid3">
+      <div class="grid2">
         <div>
           <div class="label">Produto</div>
           <select id="produto">
@@ -117,50 +58,51 @@
             <option value="sem_interesse">Sem interesse</option>
           </select>
         </div>
+      </div>
 
+      <div style="height:12px"></div>
+
+      <div class="grid2">
         <div>
           <div class="label">Volume (R$)</div>
-          <input id="volume" inputmode="decimal" placeholder="Ex: 25000">
-          <div class="small2 muted">Dica: pode digitar 25000 (sem ponto/vírgula) 😉</div>
+          <input id="volume" type="number" step="0.01" placeholder="Ex: 25000">
+        </div>
+
+        <div>
+          <div class="label">Qtd (licenças/cartões)</div>
+          <input id="qtd" type="number" step="1" placeholder="Ex: 20">
         </div>
       </div>
 
-      <div style="margin-top:12px">
+      <div style="height:12px"></div>
+
+      <div>
         <div class="label">Observações</div>
-        <textarea id="obs" placeholder="Digite as observações..."></textarea>
+        <textarea id="obs" rows="4" placeholder="Anote as taxas atuais, objeções, próximos passos…"></textarea>
       </div>
 
-      <div class="grid3" style="margin-top:12px">
+      <div style="height:12px"></div>
+
+      <div class="grid2">
         <div>
           <div class="label">Próxima ação</div>
-          <input id="prox_acao" placeholder="Ex: Enviar proposta">
+          <input id="prox_acao" type="text" placeholder="Ex: Enviar proposta">
         </div>
+
         <div>
           <div class="label">Data</div>
           <input id="prox_data" type="date">
         </div>
-        <div>
-          <div class="label">Cidade</div>
-          <input id="cidade" placeholder="Ex: Americana">
-        </div>
       </div>
 
-      <div style="margin-top:14px">
-        <div class="label">Atalhos de status</div>
-        <div class="rowBtns">
-          <button class="btnMini" id="btnNeg">Em negociação</button>
-          <button class="btnMini" id="btnAtv">Ativo</button>
-          <button class="btnMini" id="btnSem">Sem interesse</button>
-        </div>
+      <div style="height:16px"></div>
+
+      <div class="grid2">
+        <button class="btn" id="btnSalvar">Salvar alterações</button>
+        <button class="btn btnGreen" id="btnSalvarVoltar">Salvar e voltar</button>
       </div>
 
-      <div class="hr"></div>
-
-      <div class="grid3">
-        <button class="btnPrimary" id="btnSalvar">Salvar alterações</button>
-        <button class="btnDanger" id="btnExcluir">Excluir registro</button>
-        <div class="small2 muted" id="debugInfo" style="align-self:center">—</div>
-      </div>
+      <div class="small" id="last" style="margin-top:10px;opacity:.8"></div>
     </div>
   </div>
 
@@ -168,73 +110,54 @@
 
   <script type="module">
     import { sb } from "./assets/supabaseClient.js";
-    import { ensureProfile, logout, toast, BRL } from "./assets/app.js";
+    import { ensureProfile, logout, toast } from "./assets/app.js";
 
-    const el = (id) => document.getElementById(id);
+    const el = (id)=>document.getElementById(id);
 
-    // 1) pega o id da URL
+    // 1) sessão + perfil
+    const ctx = await ensureProfile();
+    if(!ctx) throw new Error("no session");
+    const { user, prof } = ctx;
+
+    el("who").textContent = `${prof.nome || ""} • ${prof.role}`;
+    el("btnLogout").addEventListener("click",(e)=>{ e.preventDefault(); logout(); });
+
+    // 2) pega id da URL
     const params = new URLSearchParams(location.search);
     const actionId = params.get("id");
-
-    if (!actionId) {
-      toast("Sem ID na URL (faltou ?id=...)");
-      el("debugInfo").textContent = "Sem ?id= na URL";
+    if(!actionId){
+      toast("Sem ID na URL. Volte e clique na linha de novo.");
       throw new Error("missing id");
     }
 
-    // 2) garante login + perfil
-    const ctx = await ensureProfile();
-    if (!ctx) throw new Error("no session");
-    const { user, prof } = ctx;
-
-    el("who").textContent = `${prof.nome || user.email} • ${prof.role}`;
-    el("btnLogout").addEventListener("click", (e)=>{ e.preventDefault(); logout(); });
-
-    // 3) helpers de label
-    const pLabel = (p) =>
-      p === "vegaspay" ? "Vegas Pay" :
-      p === "agregados" ? "Agregados" :
-      p === "cartoes" ? "Cartões" :
-      p === "credenciamento" ? "Credenciamento" : "Clube";
-
-    const sLabel = (s) =>
-      s === "ativo" ? "Ativo" :
-      s === "negociacao" ? "Em negociação" : "Sem interesse";
-
-    // 4) carrega registro
-    let row = null;
-
-    async function carregar() {
+    // 3) carrega o registro
+    async function load(){
       const { data, error } = await sb
         .from("actions")
         .select("*")
         .eq("id", actionId)
         .single();
 
-      if (error) {
+      if(error){
         toast("Erro ao carregar: " + error.message);
-        el("debugInfo").textContent = "Erro load: " + error.message;
         return;
       }
 
-      row = data;
+      // mostra cliente
+      el("cliente_nome").textContent = data.cliente_nome || "—";
+      el("cliente_meta").textContent = `${data.cidade || ""}${data.cnpj ? " • " + data.cnpj : ""}`;
 
-      // Preenche UI
-      el("clienteTitulo").textContent = row.cliente_nome || "—";
-      el("metaLinha").textContent = `${pLabel(row.produto)} • ${row.cidade || "—"} • ID: ${row.id}`;
-      el("statusPill").textContent = `status: ${sLabel(row.status)}`;
+      // popula campos editáveis
+      el("produto").value = data.produto || "vegaspay";
+      el("status").value = data.status || "negociacao";
+      el("volume").value = (data.volume ?? "");
+      el("qtd").value = (data.qtd ?? "");
+      el("obs").value = (data.obs ?? "");
+      el("prox_acao").value = (data.prox_acao ?? "");
 
-      el("produto").value = row.produto || "vegaspay";
-      el("status").value = row.status || "negociacao";
-      el("volume").value = (row.volume ?? "").toString();
-
-      el("obs").value = row.obs || row.observacoes || ""; // (compatível caso o nome seja outro)
-      el("prox_acao").value = row.prox_acao || "";
-      el("cidade").value = row.cidade || "";
-
-      // prox_data ISO -> yyyy-mm-dd
-      if (row.prox_data) {
-        const d = new Date(row.prox_data);
+      // prox_data em yyyy-mm-dd
+      if(data.prox_data){
+        const d = new Date(data.prox_data);
         const yyyy = d.getFullYear();
         const mm = String(d.getMonth()+1).padStart(2,"0");
         const dd = String(d.getDate()).padStart(2,"0");
@@ -243,80 +166,52 @@
         el("prox_data").value = "";
       }
 
-      el("debugInfo").textContent = "Carregado ✅";
+      el("last").textContent =
+        `Última atualização: ${data.updated_at ? new Date(data.updated_at).toLocaleString("pt-BR") : "—"}`;
     }
 
-    // 5) salvar
-    function parseVolume(v) {
-      if (!v) return 0;
-      // aceita "25.000,50" ou "25000"
-      const cleaned = v.toString().replace(/\./g,"").replace(",",".").replace(/[^\d.]/g,"");
-      const n = Number(cleaned);
-      return isNaN(n) ? 0 : n;
-    }
-
-    async function salvar() {
-      if (!row) return;
+    // 4) salvar (update)
+    async function save(goBack=false){
+      el("btnSalvar").disabled = true;
+      el("btnSalvarVoltar").disabled = true;
 
       const payload = {
         produto: el("produto").value,
         status: el("status").value,
-        volume: parseVolume(el("volume").value),
+        volume: el("volume").value ? Number(el("volume").value) : null,
+        qtd: el("qtd").value ? Number(el("qtd").value) : null,
+        obs: el("obs").value || null,
         prox_acao: el("prox_acao").value || null,
         prox_data: el("prox_data").value ? new Date(el("prox_data").value).toISOString() : null,
-        cidade: el("cidade").value || null,
-        // usa obs (se sua tabela for "obs") – se for outro nome, me fala que eu ajusto
-        obs: el("obs").value || null,
         updated_at: new Date().toISOString()
       };
 
-      // vendedor só pode salvar o que é dele (RLS vai segurar)
       const { error } = await sb
         .from("actions")
         .update(payload)
         .eq("id", actionId);
 
-      if (error) {
+      el("btnSalvar").disabled = false;
+      el("btnSalvarVoltar").disabled = false;
+
+      if(error){
         toast("Erro ao salvar: " + error.message);
-        el("debugInfo").textContent = "Erro save: " + error.message;
         return;
       }
 
-      toast("Salvo ✅");
-      el("debugInfo").textContent = `Salvo ✅ Volume: ${BRL(payload.volume)}`;
-      await carregar();
-    }
+      toast("✅ Salvo!");
+      await load();
 
-    // 6) excluir
-    async function excluir() {
-      if (!confirm("Quer excluir esse registro mesmo?")) return;
-
-      const { error } = await sb
-        .from("actions")
-        .delete()
-        .eq("id", actionId);
-
-      if (error) {
-        toast("Erro ao excluir: " + error.message);
-        el("debugInfo").textContent = "Erro delete: " + error.message;
-        return;
+      if(goBack){
+        // preserva filtros se quiser depois (por enquanto simples)
+        window.location.href = "negociacoes.html";
       }
-
-      toast("Excluído ✅");
-      window.location.href = "negociacoes.html";
     }
 
-    // 7) atalhos status
-    el("btnNeg").addEventListener("click", ()=>{ el("status").value="negociacao"; el("statusPill").textContent="status: Em negociação"; });
-    el("btnAtv").addEventListener("click", ()=>{ el("status").value="ativo"; el("statusPill").textContent="status: Ativo"; });
-    el("btnSem").addEventListener("click", ()=>{ el("status").value="sem_interesse"; el("statusPill").textContent="status: Sem interesse"; });
+    el("btnSalvar").addEventListener("click", ()=>save(false));
+    el("btnSalvarVoltar").addEventListener("click", ()=>save(true));
 
-    // botões
-    el("btnSalvar").addEventListener("click", salvar);
-    el("btnExcluir").addEventListener("click", excluir);
-
-    // vai
-    await carregar();
+    await load();
   </script>
 </body>
 </html>
