@@ -155,7 +155,7 @@
       el("obs").value = (data.obs ?? "");
       el("prox_acao").value = (data.prox_acao ?? "");
 
-      // prox_data em yyyy-mm-dd
+      // prox_data (se vier como date ou timestamp)
       if(data.prox_data){
         const d = new Date(data.prox_data);
         const yyyy = d.getFullYear();
@@ -182,7 +182,10 @@
         qtd: el("qtd").value ? Number(el("qtd").value) : null,
         obs: el("obs").value || null,
         prox_acao: el("prox_acao").value || null,
-        prox_data: el("prox_data").value ? new Date(el("prox_data").value).toISOString() : null,
+
+        // ✅ ajuste: salva date como YYYY-MM-DD (evita dor de cabeça de fuso)
+        prox_data: el("prox_data").value || null,
+
         updated_at: new Date().toISOString()
       };
 
@@ -203,7 +206,6 @@
       await load();
 
       if(goBack){
-        // preserva filtros se quiser depois (por enquanto simples)
         window.location.href = "negociacoes.html";
       }
     }
