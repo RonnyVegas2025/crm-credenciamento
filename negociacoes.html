@@ -61,7 +61,7 @@ async function query(){
 
 function renderRows(list){
   el("rows").innerHTML=list.map(r=>`
-    <tr>
+    <tr onclick="abrirDetalhe('${r.id}')" style="cursor:pointer">
       <td><b>${r.cliente_nome}</b></td>
       <td>${pLabel(r.produto)}</td>
       <td>${sLabel(r.status)}</td>
