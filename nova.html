@@ -6,6 +6,9 @@
   <title>Nova Ação</title>
   <link rel="stylesheet" href="assets/app.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .smallTitle{opacity:.75;font-weight:800;margin-top:18px}
+  </style>
 </head>
 
 <body>
@@ -30,7 +33,19 @@
         </div>
         <div>
           <div class="label">Cidade</div>
-          <input id="cidade" type="text" placeholder="Ex: Americana">
+          <input id="cidade" list="cidadesSug" type="text" placeholder="Ex: Americana">
+          <datalist id="cidadesSug">
+            <option value="Americana"></option>
+            <option value="Campinas"></option>
+            <option value="Sumaré"></option>
+            <option value="Hortolândia"></option>
+            <option value="Nova Odessa"></option>
+            <option value="Santa Bárbara d'Oeste"></option>
+            <option value="Piracicaba"></option>
+            <option value="Limeira"></option>
+            <option value="Rio Claro"></option>
+          </datalist>
+          <div class="small" style="opacity:.75">Sugestões pra padronizar. Se precisar, digita outra.</div>
         </div>
       </div>
 
@@ -39,7 +54,14 @@
       <div class="grid2">
         <div>
           <div class="label">UF</div>
-          <input id="uf" type="text" maxlength="2" placeholder="Ex: SP">
+          <select id="uf">
+            <option value="">Selecione…</option>
+            <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option>
+            <option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+            <option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option>
+            <option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+            <option selected>SP</option><option>SE</option><option>TO</option>
+          </select>
         </div>
         <div>
           <div class="label">Status</div>
@@ -70,6 +92,53 @@
         </div>
       </div>
 
+      <!-- Vegas Pay (dinâmico) -->
+      <div id="boxVegasPay" style="display:none;margin-top:14px">
+        <div class="smallTitle">Vegas Pay — Taxas (Atual x Oferta)</div>
+        <div style="height:10px"></div>
+
+        <div class="grid2">
+          <div>
+            <div class="label">Movimentação comprometida (R$)</div>
+            <input id="vp_mov" type="number" step="0.01" placeholder="Ex: 50000">
+          </div>
+          <div>
+            <div class="label">Modalidade crédito</div>
+            <select id="vp_mod">
+              <option value="">Selecione…</option>
+              <option value="30">Crédito 30 dias</option>
+              <option value="d1">Crédito D+1</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="grid2">
+          <div>
+            <div class="label">Débito — taxa atual (%)</div>
+            <input id="vp_deb_atual" type="number" step="0.01" placeholder="Ex: 1.89">
+          </div>
+          <div>
+            <div class="label">Débito — taxa oferta (%)</div>
+            <input id="vp_deb_oferta" type="number" step="0.01" placeholder="Ex: 1.49">
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="grid2">
+          <div>
+            <div class="label">Crédito — taxa atual (%)</div>
+            <input id="vp_cred_atual" type="number" step="0.01" placeholder="Ex: 3.39">
+          </div>
+          <div>
+            <div class="label">Crédito — taxa oferta (%)</div>
+            <input id="vp_cred_oferta" type="number" step="0.01" placeholder="Ex: 2.99">
+          </div>
+        </div>
+      </div>
+
       <div style="height:12px"></div>
 
       <div class="grid2">
@@ -77,9 +146,21 @@
           <div class="label">Qtd (licenças/cartões)</div>
           <input id="qtd" type="number" step="1" placeholder="Ex: 20">
         </div>
+
         <div>
           <div class="label">Próxima ação</div>
-          <input id="prox_acao" type="text" placeholder="Ex: Enviar proposta">
+          <select id="prox_acao_tipo">
+            <option value="">Selecione…</option>
+            <option>Enviar proposta</option>
+            <option>Fazer ligação</option>
+            <option>Fazer reunião</option>
+            <option>Visita presencial</option>
+            <option>Coletar documentos</option>
+            <option>Enviar contrato</option>
+            <option>Fechar contrato</option>
+            <option>Outro</option>
+          </select>
+          <input id="prox_acao_outro" style="display:none;margin-top:8px" type="text" placeholder="Qual ação?">
         </div>
       </div>
 
@@ -96,12 +177,11 @@
       <div style="height:12px"></div>
 
       <div>
-        <div class="label">Observações</div>
-        <textarea id="obs" rows="4" placeholder="Taxas atuais, objeções, detalhes do contato…"></textarea>
+        <div class="label">Comentário (vira o 1º item do histórico)</div>
+        <textarea id="note" rows="4" placeholder="Ex: Visita feita, cliente usa X maquininha, pediu proposta até sexta…"></textarea>
       </div>
 
-      <div style="height:18px"></div>
-      <div class="small" style="opacity:.75;font-weight:700">Contato do cliente</div>
+      <div class="smallTitle">Contato do cliente</div>
       <div style="height:10px"></div>
 
       <div class="grid2">
@@ -122,8 +202,7 @@
         <input id="contato_email" type="email" placeholder="Ex: financeiro@empresa.com.br">
       </div>
 
-      <div style="height:18px"></div>
-      <div class="small" style="opacity:.75;font-weight:700">Endereço</div>
+      <div class="smallTitle">Endereço</div>
       <div style="height:10px"></div>
 
       <div>
@@ -158,7 +237,6 @@
   <script type="module">
     import { sb } from "./assets/supabaseClient.js";
     import { ensureProfile, logout, toast } from "./assets/app.js";
-
     const el = (id)=>document.getElementById(id);
 
     const ctx = await ensureProfile();
@@ -167,6 +245,29 @@
 
     el("who").textContent = `${prof.nome || ""} • ${prof.role}`;
     el("btnLogout").addEventListener("click",(e)=>{ e.preventDefault(); logout(); });
+
+    function showVegasPayBox(){
+      el("boxVegasPay").style.display = (el("produto").value === "vegaspay") ? "block" : "none";
+    }
+    el("produto").addEventListener("change", showVegasPayBox);
+    showVegasPayBox();
+
+    el("prox_acao_tipo").addEventListener("change", ()=>{
+      el("prox_acao_outro").style.display = (el("prox_acao_tipo").value === "Outro") ? "block" : "none";
+    });
+
+    function getProxAcaoTexto(){
+      const tipo = el("prox_acao_tipo").value || "";
+      if(!tipo) return null;
+      if(tipo === "Outro") return el("prox_acao_outro").value.trim() || "Outro";
+      return tipo;
+    }
+
+    function numOrNull(v){
+      if(v === "" || v === null || v === undefined) return null;
+      const n = Number(v);
+      return isNaN(n) ? null : n;
+    }
 
     async function criar(){
       const cliente = el("cliente_nome").value.trim();
@@ -179,6 +280,7 @@
 
       const payload = {
         user_id: user.id,
+
         cliente_nome: cliente,
         cidade: el("cidade").value.trim() || null,
         uf: (el("uf").value || "").trim().toUpperCase() || null,
@@ -186,11 +288,12 @@
         produto: el("produto").value,
         status: el("status").value,
 
-        volume: el("volume").value ? Number(el("volume").value) : null,
+        volume: numOrNull(el("volume").value),
         qtd: el("qtd").value ? Number(el("qtd").value) : null,
 
-        obs: el("obs").value || null,
-        prox_acao: el("prox_acao").value || null,
+        prox_acao_tipo: el("prox_acao_tipo").value || null,
+        prox_acao_outro: el("prox_acao_outro").value || null,
+        prox_acao: getProxAcaoTexto(),
         prox_data: el("prox_data").value || null,
 
         contato_nome: el("contato_nome").value || null,
@@ -201,6 +304,14 @@
         bairro: el("bairro").value || null,
         cep: el("cep").value || null,
 
+        // Vegas Pay extras (só se produto for Vegas Pay)
+        vp_movimentacao: el("produto").value === "vegaspay" ? numOrNull(el("vp_mov").value) : null,
+        vp_modalidade_credito: el("produto").value === "vegaspay" ? (el("vp_mod").value || null) : null,
+        vp_taxa_debito_atual: el("produto").value === "vegaspay" ? numOrNull(el("vp_deb_atual").value) : null,
+        vp_taxa_debito_oferta: el("produto").value === "vegaspay" ? numOrNull(el("vp_deb_oferta").value) : null,
+        vp_taxa_credito_atual: el("produto").value === "vegaspay" ? numOrNull(el("vp_cred_atual").value) : null,
+        vp_taxa_credito_oferta: el("produto").value === "vegaspay" ? numOrNull(el("vp_cred_oferta").value) : null,
+
         updated_at: new Date().toISOString()
       };
 
@@ -210,15 +321,28 @@
         .select("id")
         .single();
 
-      el("btnCriar").disabled = false;
-
       if(error){
+        el("btnCriar").disabled = false;
         toast("Erro ao criar: " + error.message);
         return;
       }
 
+      // cria o 1º item do histórico (linha do tempo)
+      const note = el("note").value || null;
+      const { error: logErr } = await sb
+        .from("action_logs")
+        .insert({
+          action_id: data.id,
+          user_id: user.id,
+          status: payload.status,
+          prox_acao: payload.prox_acao,
+          note: note
+        });
+
+      // se falhar o log, não trava o fluxo
+      if(logErr) console.warn("log error", logErr);
+
       toast("✅ Criado!");
-      // volta pra lista já filtrando em negociação
       window.location.href = `detalhe.html?id=${data.id}&period=30&status=negociacao`;
     }
 
