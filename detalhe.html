@@ -38,6 +38,7 @@
 
       <div style="height:12px"></div>
 
+      <!-- Negociação -->
       <div class="grid2">
         <div>
           <div class="label">Produto</div>
@@ -95,6 +96,66 @@
         </div>
       </div>
 
+      <div style="height:18px"></div>
+      <div class="small" style="opacity:.75;font-weight:700">Contato do cliente</div>
+      <div style="height:10px"></div>
+
+      <!-- Contato -->
+      <div class="grid2">
+        <div>
+          <div class="label">Nome do contato</div>
+          <input id="contato_nome" type="text" placeholder="Ex: João Silva">
+        </div>
+
+        <div>
+          <div class="label">Telefone/WhatsApp</div>
+          <input id="contato_telefone" type="text" placeholder="Ex: (19) 99999-9999">
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div>
+        <div class="label">E-mail</div>
+        <input id="contato_email" type="email" placeholder="Ex: financeiro@empresa.com.br">
+      </div>
+
+      <div style="height:18px"></div>
+      <div class="small" style="opacity:.75;font-weight:700">Endereço</div>
+      <div style="height:10px"></div>
+
+      <!-- Endereço -->
+      <div>
+        <div class="label">Endereço</div>
+        <input id="endereco" type="text" placeholder="Rua, número, complemento">
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Bairro</div>
+          <input id="bairro" type="text" placeholder="Ex: Centro">
+        </div>
+        <div>
+          <div class="label">CEP</div>
+          <input id="cep" type="text" placeholder="Ex: 13400-000">
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Cidade</div>
+          <input id="cidade" type="text" placeholder="Ex: Americana">
+        </div>
+        <div>
+          <div class="label">UF</div>
+          <input id="uf" type="text" maxlength="2" placeholder="Ex: SP">
+        </div>
+      </div>
+
       <div style="height:16px"></div>
 
       <div class="grid2">
@@ -114,7 +175,6 @@
 
     const el = (id)=>document.getElementById(id);
 
-    // 1) sessão + perfil
     const ctx = await ensureProfile();
     if(!ctx) throw new Error("no session");
     const { user, prof } = ctx;
@@ -122,7 +182,6 @@
     el("who").textContent = `${prof.nome || ""} • ${prof.role}`;
     el("btnLogout").addEventListener("click",(e)=>{ e.preventDefault(); logout(); });
 
-    // 2) pega id da URL
     const params = new URLSearchParams(location.search);
     const actionId = params.get("id");
     if(!actionId){
@@ -130,13 +189,12 @@
       throw new Error("missing id");
     }
 
-    // ✅ monta URL de volta preservando filtros
+    // volta mantendo filtros
     const backParams = new URLSearchParams(location.search);
     backParams.delete("id");
     const backUrl = "negociacoes.html" + (backParams.toString() ? `?${backParams.toString()}` : "");
     el("btnVoltar").href = backUrl;
 
-    // 3) carrega o registro
     async function load(){
       const { data, error } = await sb
         .from("actions")
@@ -149,11 +207,10 @@
         return;
       }
 
-      // mostra cliente
       el("cliente_nome").textContent = data.cliente_nome || "—";
-      el("cliente_meta").textContent = `${data.cidade || ""}${data.cnpj ? " • " + data.cnpj : ""}`;
+      el("cliente_meta").textContent =
+        `${data.cidade || ""}${data.uf ? " • " + data.uf : ""}${data.cnpj ? " • " + data.cnpj : ""}`;
 
-      // popula campos editáveis
       el("produto").value = data.produto || "vegaspay";
       el("status").value = data.status || "negociacao";
       el("volume").value = (data.volume ?? "");
@@ -161,7 +218,6 @@
       el("obs").value = (data.obs ?? "");
       el("prox_acao").value = (data.prox_acao ?? "");
 
-      // prox_data (se vier como date ou timestamp)
       if(data.prox_data){
         const d = new Date(data.prox_data);
         const yyyy = d.getFullYear();
@@ -172,11 +228,20 @@
         el("prox_data").value = "";
       }
 
+      // novos campos
+      el("contato_nome").value = (data.contato_nome ?? "");
+      el("contato_telefone").value = (data.contato_telefone ?? "");
+      el("contato_email").value = (data.contato_email ?? "");
+      el("endereco").value = (data.endereco ?? "");
+      el("bairro").value = (data.bairro ?? "");
+      el("cep").value = (data.cep ?? "");
+      el("cidade").value = (data.cidade ?? "");
+      el("uf").value = (data.uf ?? "");
+
       el("last").textContent =
         `Última atualização: ${data.updated_at ? new Date(data.updated_at).toLocaleString("pt-BR") : "—"}`;
     }
 
-    // 4) salvar (update)
     async function save(goBack=false){
       el("btnSalvar").disabled = true;
       el("btnSalvarVoltar").disabled = true;
@@ -188,9 +253,17 @@
         qtd: el("qtd").value ? Number(el("qtd").value) : null,
         obs: el("obs").value || null,
         prox_acao: el("prox_acao").value || null,
-
-        // ✅ salva date como YYYY-MM-DD
         prox_data: el("prox_data").value || null,
+
+        // contato/endereço
+        contato_nome: el("contato_nome").value || null,
+        contato_telefone: el("contato_telefone").value || null,
+        contato_email: el("contato_email").value || null,
+        endereco: el("endereco").value || null,
+        bairro: el("bairro").value || null,
+        cep: el("cep").value || null,
+        cidade: el("cidade").value || null,
+        uf: (el("uf").value || "").toUpperCase() || null,
 
         updated_at: new Date().toISOString()
       };
@@ -211,9 +284,7 @@
       toast("✅ Salvo!");
       await load();
 
-      if(goBack){
-        window.location.href = backUrl;  // ✅ volta mantendo filtros
-      }
+      if(goBack) window.location.href = backUrl;
     }
 
     el("btnSalvar").addEventListener("click", ()=>save(false));
