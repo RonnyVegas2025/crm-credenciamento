@@ -1,137 +1,228 @@
-<!doctype html><html lang="pt-br"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Nova ação</title><link rel="stylesheet" href="assets/app.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>.actionsFixed{position:fixed;bottom:0;left:0;right:0;background:rgba(11,21,38,.92);border-top:1px solid rgba(148,163,184,.18);padding:12px;display:flex;gap:10px}.padBottom{padding-bottom:96px}</style>
-</head><body>
-<div class="wrap padBottom"><div class="top"><h1>Nova ação</h1><div class="sub">Salva em actions (Supabase).</div>
-<div class="nav"><a href="dashboard.html">📊</a><a href="negociacoes.html">📋</a><a href="mapa.html">📍</a><a href="#" id="btnLogout">🚪</a></div></div>
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Nova Ação</title>
+  <link rel="stylesheet" href="assets/app.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
 
-<div class="grid">
-  <div class="card">
-    <div class="value">Cliente *</div>
-    <div class="label">Nome</div><input id="cliente" placeholder="Ex: Mercado Central">
-    <div class="grid2" style="margin-top:8px">
-      <div><div class="label">Cidade</div><input id="cidade" placeholder="Ex: Campinas"></div>
-      <div><div class="label">CNPJ (opcional)</div><input id="cnpj"></div>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <h1>Nova Ação</h1>
+      <div class="sub" id="who">Carregando…</div>
+
+      <div class="nav">
+        <a href="dashboard.html">📊</a>
+        <a href="negociacoes.html">📋</a>
+        <a href="mapa.html">📍</a>
+        <a href="#" id="btnLogout">🚪</a>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="grid2">
+        <div>
+          <div class="label">Cliente (nome do comércio)</div>
+          <input id="cliente_nome" type="text" placeholder="Ex: Restaurante do Zé">
+        </div>
+        <div>
+          <div class="label">Cidade</div>
+          <input id="cidade" type="text" placeholder="Ex: Americana">
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">UF</div>
+          <input id="uf" type="text" maxlength="2" placeholder="Ex: SP">
+        </div>
+        <div>
+          <div class="label">Status</div>
+          <select id="status">
+            <option value="negociacao" selected>Em negociação</option>
+            <option value="ativo">Ativo</option>
+            <option value="sem_interesse">Sem interesse</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Produto</div>
+          <select id="produto">
+            <option value="vegaspay">Vegas Pay</option>
+            <option value="agregados">Agregados</option>
+            <option value="cartoes">Cartões</option>
+            <option value="credenciamento">Credenciamento</option>
+            <option value="clube">Clube</option>
+          </select>
+        </div>
+        <div>
+          <div class="label">Volume (R$)</div>
+          <input id="volume" type="number" step="0.01" placeholder="Ex: 120000">
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Qtd (licenças/cartões)</div>
+          <input id="qtd" type="number" step="1" placeholder="Ex: 20">
+        </div>
+        <div>
+          <div class="label">Próxima ação</div>
+          <input id="prox_acao" type="text" placeholder="Ex: Enviar proposta">
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Data da próxima ação</div>
+          <input id="prox_data" type="date">
+        </div>
+        <div></div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div>
+        <div class="label">Observações</div>
+        <textarea id="obs" rows="4" placeholder="Taxas atuais, objeções, detalhes do contato…"></textarea>
+      </div>
+
+      <div style="height:18px"></div>
+      <div class="small" style="opacity:.75;font-weight:700">Contato do cliente</div>
+      <div style="height:10px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Nome do contato</div>
+          <input id="contato_nome" type="text" placeholder="Ex: João Silva">
+        </div>
+        <div>
+          <div class="label">Telefone/WhatsApp</div>
+          <input id="contato_telefone" type="text" placeholder="Ex: (19) 99999-9999">
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div>
+        <div class="label">E-mail</div>
+        <input id="contato_email" type="email" placeholder="Ex: financeiro@empresa.com.br">
+      </div>
+
+      <div style="height:18px"></div>
+      <div class="small" style="opacity:.75;font-weight:700">Endereço</div>
+      <div style="height:10px"></div>
+
+      <div>
+        <div class="label">Endereço</div>
+        <input id="endereco" type="text" placeholder="Rua, número, complemento">
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Bairro</div>
+          <input id="bairro" type="text" placeholder="Ex: Centro">
+        </div>
+        <div>
+          <div class="label">CEP</div>
+          <input id="cep" type="text" placeholder="Ex: 13400-000">
+        </div>
+      </div>
+
+      <div style="height:16px"></div>
+
+      <div class="grid2">
+        <button class="btn btnGreen" id="btnCriar">Criar negociação</button>
+        <a class="btn" href="dashboard.html">Cancelar</a>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="value">Produto *</div>
-    <select id="produto">
-      <option value="">Selecione</option>
-      <option value="vegaspay">Vegas Pay</option>
-      <option value="agregados">Agregados</option>
-      <option value="cartoes">Cartões</option>
-      <option value="credenciamento">Credenciamento</option>
-      <option value="clube">Clube Vantagens</option>
-    </select>
-    <div class="small">MVP: detalhes mínimos + status.</div>
-  </div>
+  <div class="toast" id="toast"></div>
 
-  <div class="card" id="det" style="display:none">
-    <div class="value">Status *</div>
-    <div class="chips" id="st">
-      <button class="chip" type="button" data-value="negociacao">Em negociação</button>
-      <button class="chip" type="button" data-value="ativo">Fechado</button>
-      <button class="chip" type="button" data-value="sem_interesse">Sem interesse</button>
-    </div>
-    <div class="grid2" style="margin-top:10px">
-      <div><div class="label">Volume (R$)</div><input id="volume" inputmode="decimal" placeholder="Ex: 120000"></div>
-      <div><div class="label">Qtd (licenças/cartões)</div><input id="qtd" inputmode="numeric" placeholder="Ex: 20"></div>
-    </div>
-    <div class="label" style="margin-top:10px">Observações</div><textarea id="obs" placeholder="Resumo da negociação"></textarea>
-  </div>
+  <script type="module">
+    import { sb } from "./assets/supabaseClient.js";
+    import { ensureProfile, logout, toast } from "./assets/app.js";
 
-  <div class="card" id="prox" style="display:none">
-    <div class="value">Próxima ação <span id="req" style="color:var(--bad);display:none">*</span></div>
-    <div class="label">Ação</div><input id="proxAcao" placeholder="Ex: Ligar / Visitar / Enviar proposta">
-    <div class="label">Data</div><input id="proxData" type="date">
-  </div>
+    const el = (id)=>document.getElementById(id);
 
-  <div class="card">
-    <div class="value">Localização (opcional)</div>
-    <button class="btn ghost" id="btnGeo">📍 Capturar</button>
-    <div class="small" id="geo">—</div>
-  </div>
-</div></div>
+    const ctx = await ensureProfile();
+    if(!ctx) throw new Error("no session");
+    const { user, prof } = ctx;
 
-<div class="actionsFixed">
-  <button class="btn primary" id="save">Salvar</button>
-  <button class="btn green" id="saveNew">Salvar + Nova</button>
-</div>
+    el("who").textContent = `${prof.nome || ""} • ${prof.role}`;
+    el("btnLogout").addEventListener("click",(e)=>{ e.preventDefault(); logout(); });
 
-<div class="toast" id="toast"></div>
-<script type="module">
-import { sb } from "./assets/supabaseClient.js";
-import { ensureProfile, logout, toast, bindChipGroup } from "./assets/app.js";
-const el=(id)=>document.getElementById(id);
-const {user, prof}=await ensureProfile(); if(!user) throw new Error("no session");
-el("btnLogout").addEventListener("click",(e)=>{e.preventDefault();logout();});
+    async function criar(){
+      const cliente = el("cliente_nome").value.trim();
+      if(!cliente){
+        toast("Preencha o nome do cliente.");
+        return;
+      }
 
-let geo=null;
-el("btnGeo").addEventListener("click", ()=>{
-  if(!navigator.geolocation){toast("Sem geolocalização."); return;}
-  navigator.geolocation.getCurrentPosition((pos)=>{
-    geo={lat:pos.coords.latitude, lon:pos.coords.longitude, acc:pos.coords.accuracy};
-    el("geo").textContent=`✔ ${geo.lat.toFixed(5)}, ${geo.lon.toFixed(5)} • ~${Math.round(geo.acc)}m`;
-  }, (err)=>toast(err.message), {enableHighAccuracy:true,timeout:12000});
-});
+      el("btnCriar").disabled = true;
 
-bindChipGroup("st", ()=>updateReq());
+      const payload = {
+        user_id: user.id,
+        cliente_nome: cliente,
+        cidade: el("cidade").value.trim() || null,
+        uf: (el("uf").value || "").trim().toUpperCase() || null,
 
-const d=new Date(); d.setDate(d.getDate()+2); el("proxData").value=d.toISOString().slice(0,10);
+        produto: el("produto").value,
+        status: el("status").value,
 
-el("produto").addEventListener("change", ()=>{
-  const p=el("produto").value;
-  el("det").style.display=p?"block":"none";
-  el("prox").style.display=p?"block":"none";
-  updateReq();
-});
+        volume: el("volume").value ? Number(el("volume").value) : null,
+        qtd: el("qtd").value ? Number(el("qtd").value) : null,
 
-function updateReq(){
-  const st=document.getElementById("st").dataset.value||"";
-  const req = st && st!=="ativo";
-  el("req").style.display=req?"inline":"none";
-  return req;
-}
+        obs: el("obs").value || null,
+        prox_acao: el("prox_acao").value || null,
+        prox_data: el("prox_data").value || null,
 
-function num(v){const s=(v||"").toString().replace(/[^\d.,]/g,"").replace(".","").replace(",","."); const n=Number(s); return isFinite(n)?n:0;}
+        contato_nome: el("contato_nome").value || null,
+        contato_telefone: el("contato_telefone").value || null,
+        contato_email: el("contato_email").value || null,
 
-async function ensureClient(nome,cidade,cnpj){
-  const {data:ex}=await sb.from("clients").select("id").eq("nome",nome).eq("cidade",cidade||"").maybeSingle();
-  if(ex?.id) return ex.id;
-  const {data, error}=await sb.from("clients").insert({nome,cidade:cidade||"",cnpj:cnpj||"",created_by:user.id}).select("id").single();
-  if(error) throw error; return data.id;
-}
+        endereco: el("endereco").value || null,
+        bairro: el("bairro").value || null,
+        cep: el("cep").value || null,
 
-async function save(reset){
-  const cliente=el("cliente").value.trim(), produto=el("produto").value;
-  const status=document.getElementById("st").dataset.value||"";
-  if(!cliente||!produto||!status){toast("Preencha Cliente, Produto e Status."); return;}
-  const req=updateReq();
-  if(req && (!el("proxAcao").value.trim() || !el("proxData").value)){toast("Informe a próxima ação."); return;}
+        updated_at: new Date().toISOString()
+      };
 
-  let client_id=null;
-  try{client_id=await ensureClient(cliente, el("cidade").value.trim(), el("cnpj").value.trim());}
-  catch(e){toast("Erro cliente: "+e.message); return;}
+      const { data, error } = await sb
+        .from("actions")
+        .insert(payload)
+        .select("id")
+        .single();
 
-  const payload={
-    user_id:user.id, client_id, cliente_nome:cliente, cidade:el("cidade").value.trim(),
-    produto, status, prox_acao:el("proxAcao").value.trim(), prox_data:el("proxData").value||null,
-    volume:num(el("volume").value), licencas: produto==="agregados"?num(el("qtd").value):0,
-    cartoes_qtd: produto==="cartoes"?num(el("qtd").value):0,
-    detalhes:{obs:el("obs").value.trim()}, geo
-  };
-  const {error}=await sb.from("actions").insert(payload);
-  if(error){toast("Erro ação: "+error.message); return;}
-  toast("Salvo ✅");
-  if(reset){
-    el("produto").value=""; el("det").style.display="none"; el("prox").style.display="none";
-    document.getElementById("st").dataset.value=""; document.querySelectorAll("#st .chip").forEach(b=>b.setAttribute("aria-pressed","false"));
-    el("volume").value=""; el("qtd").value=""; el("obs").value=""; el("proxAcao").value=""; geo=null; el("geo").textContent="—";
-  }else location.href="negociacoes.html";
-}
-el("save").addEventListener("click", ()=>save(false));
-el("saveNew").addEventListener("click", ()=>save(true));
-</script></body></html>
+      el("btnCriar").disabled = false;
+
+      if(error){
+        toast("Erro ao criar: " + error.message);
+        return;
+      }
+
+      toast("✅ Criado!");
+      // volta pra lista já filtrando em negociação
+      window.location.href = `detalhe.html?id=${data.id}&period=30&status=negociacao`;
+    }
+
+    el("btnCriar").addEventListener("click", criar);
+  </script>
+</body>
+</html>
