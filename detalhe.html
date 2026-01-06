@@ -6,6 +6,20 @@
   <title>Detalhe</title>
   <link rel="stylesheet" href="assets/app.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .sectionTitle{opacity:.75;font-weight:900;margin-top:18px}
+    .timeline{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+    .tItem{border:1px solid rgba(0,0,0,.08);border-radius:12px;padding:10px}
+    .tTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .tMeta{font-size:12px;opacity:.75}
+    .pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:800}
+    .pillNeg{background:rgba(255,200,0,.18)}
+    .pillAtv{background:rgba(0,200,120,.15)}
+    .pillSem{background:rgba(255,0,0,.12)}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    @media (max-width: 820px){ .row3{grid-template-columns:1fr} }
+    .muted{opacity:.7}
+  </style>
 </head>
 
 <body>
@@ -23,11 +37,12 @@
       </div>
     </div>
 
+    <!-- CARD PRINCIPAL -->
     <div class="card" style="margin-top:12px">
       <div class="grid2">
         <div>
           <div class="label">Cliente</div>
-          <div id="cliente_nome" style="font-weight:700">Carregando…</div>
+          <div id="cliente_nome" style="font-weight:800">Carregando…</div>
           <div class="small" id="cliente_meta"></div>
         </div>
 
@@ -38,7 +53,7 @@
 
       <div style="height:12px"></div>
 
-      <!-- Negociação -->
+      <!-- RESUMO NEGOCIAÇÃO -->
       <div class="grid2">
         <div>
           <div class="label">Produto</div>
@@ -52,7 +67,7 @@
         </div>
 
         <div>
-          <div class="label">Status</div>
+          <div class="label">Status (resumo)</div>
           <select id="status">
             <option value="negociacao">Em negociação</option>
             <option value="ativo">Ativo</option>
@@ -77,36 +92,98 @@
 
       <div style="height:12px"></div>
 
-      <div>
-        <div class="label">Observações</div>
-        <textarea id="obs" rows="4" placeholder="Anote as taxas atuais, objeções, próximos passos…"></textarea>
+      <div class="row3">
+        <div>
+          <div class="label">Próxima ação (padronizada)</div>
+          <select id="prox_acao_tipo">
+            <option value="">Selecione…</option>
+            <option>Enviar proposta</option>
+            <option>Fazer ligação</option>
+            <option>Fazer reunião</option>
+            <option>Visita presencial</option>
+            <option>Coletar documentos</option>
+            <option>Enviar contrato</option>
+            <option>Fechar contrato</option>
+            <option>Outro</option>
+          </select>
+          <input id="prox_acao_outro" style="display:none;margin-top:8px" type="text" placeholder="Qual ação?">
+        </div>
+
+        <div>
+          <div class="label">Data da próxima ação</div>
+          <input id="prox_data" type="date">
+        </div>
+
+        <div>
+          <div class="label">Próxima ação (texto final)</div>
+          <input id="prox_acao" type="text" disabled class="muted" placeholder="Auto (com base na seleção)">
+        </div>
       </div>
 
       <div style="height:12px"></div>
 
-      <div class="grid2">
-        <div>
-          <div class="label">Próxima ação</div>
-          <input id="prox_acao" type="text" placeholder="Ex: Enviar proposta">
+      <div>
+        <div class="label">Observações (resumo)</div>
+        <textarea id="obs" rows="3" placeholder="Resumo rápido (o histórico fica na linha do tempo)"></textarea>
+        <div class="small muted">Dica: use esse campo só como “resumo do caso”. O histórico mesmo fica abaixo.</div>
+      </div>
+
+      <!-- Vegas Pay box -->
+      <div id="boxVegasPay" style="display:none;margin-top:14px">
+        <div class="sectionTitle">Vegas Pay — Taxas (Atual x Oferta)</div>
+        <div style="height:10px"></div>
+
+        <div class="grid2">
+          <div>
+            <div class="label">Movimentação comprometida (R$)</div>
+            <input id="vp_movimentacao" type="number" step="0.01" placeholder="Ex: 50000">
+          </div>
+          <div>
+            <div class="label">Modalidade crédito</div>
+            <select id="vp_modalidade_credito">
+              <option value="">Selecione…</option>
+              <option value="30">Crédito 30 dias</option>
+              <option value="d1">Crédito D+1</option>
+            </select>
+          </div>
         </div>
 
-        <div>
-          <div class="label">Data</div>
-          <input id="prox_data" type="date">
+        <div style="height:12px"></div>
+
+        <div class="grid2">
+          <div>
+            <div class="label">Débito — taxa atual (%)</div>
+            <input id="vp_taxa_debito_atual" type="number" step="0.01" placeholder="Ex: 1.89">
+          </div>
+          <div>
+            <div class="label">Débito — taxa oferta (%)</div>
+            <input id="vp_taxa_debito_oferta" type="number" step="0.01" placeholder="Ex: 1.49">
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="grid2">
+          <div>
+            <div class="label">Crédito — taxa atual (%)</div>
+            <input id="vp_taxa_credito_atual" type="number" step="0.01" placeholder="Ex: 3.39">
+          </div>
+          <div>
+            <div class="label">Crédito — taxa oferta (%)</div>
+            <input id="vp_taxa_credito_oferta" type="number" step="0.01" placeholder="Ex: 2.99">
+          </div>
         </div>
       </div>
 
       <div style="height:18px"></div>
-      <div class="small" style="opacity:.75;font-weight:700">Contato do cliente</div>
+      <div class="sectionTitle">Contato do cliente</div>
       <div style="height:10px"></div>
 
-      <!-- Contato -->
       <div class="grid2">
         <div>
           <div class="label">Nome do contato</div>
           <input id="contato_nome" type="text" placeholder="Ex: João Silva">
         </div>
-
         <div>
           <div class="label">Telefone/WhatsApp</div>
           <input id="contato_telefone" type="text" placeholder="Ex: (19) 99999-9999">
@@ -120,11 +197,9 @@
         <input id="contato_email" type="email" placeholder="Ex: financeiro@empresa.com.br">
       </div>
 
-      <div style="height:18px"></div>
-      <div class="small" style="opacity:.75;font-weight:700">Endereço</div>
+      <div class="sectionTitle">Endereço</div>
       <div style="height:10px"></div>
 
-      <!-- Endereço -->
       <div>
         <div class="label">Endereço</div>
         <input id="endereco" type="text" placeholder="Rua, número, complemento">
@@ -165,6 +240,75 @@
 
       <div class="small" id="last" style="margin-top:10px;opacity:.8"></div>
     </div>
+
+    <!-- CARD HISTÓRICO -->
+    <div class="card" style="margin-top:12px">
+      <div class="grid2">
+        <div>
+          <div class="label" style="font-weight:900">Histórico (linha do tempo)</div>
+          <div class="small muted">Aqui fica o que aconteceu de verdade (data/hora + status + comentário).</div>
+        </div>
+        <div style="text-align:right">
+          <button class="btn btnGreen" id="btnToggleNovo">+ Registrar nova ação</button>
+        </div>
+      </div>
+
+      <div id="boxNovoLog" style="display:none;margin-top:12px">
+        <div class="row3">
+          <div>
+            <div class="label">Novo status</div>
+            <select id="log_status">
+              <option value="">(não alterar)</option>
+              <option value="negociacao">Em negociação</option>
+              <option value="ativo">Ativo</option>
+              <option value="sem_interesse">Sem interesse</option>
+            </select>
+          </div>
+
+          <div>
+            <div class="label">Próxima ação</div>
+            <select id="log_prox_tipo">
+              <option value="">(não alterar)</option>
+              <option>Enviar proposta</option>
+              <option>Fazer ligação</option>
+              <option>Fazer reunião</option>
+              <option>Visita presencial</option>
+              <option>Coletar documentos</option>
+              <option>Enviar contrato</option>
+              <option>Fechar contrato</option>
+              <option>Outro</option>
+            </select>
+            <input id="log_prox_outro" style="display:none;margin-top:8px" type="text" placeholder="Qual ação?">
+          </div>
+
+          <div>
+            <div class="label">Data da próxima ação</div>
+            <input id="log_prox_data" type="date">
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div>
+          <div class="label">Comentário</div>
+          <textarea id="log_note" rows="3" placeholder="Ex: Liguei, pediu proposta com taxa X. Retornar sexta."></textarea>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="grid2">
+          <button class="btn btnGreen" id="btnSalvarLog">Registrar</button>
+          <button class="btn" id="btnCancelarLog">Cancelar</button>
+        </div>
+
+        <div style="height:10px"></div>
+        <div class="small muted">Registrar aqui cria uma entrada no histórico e (se você escolher) atualiza o resumo acima.</div>
+      </div>
+
+      <div id="timeline" class="timeline"></div>
+      <div class="small" id="emptyTimeline" style="display:none;margin-top:10px">Sem histórico ainda.</div>
+    </div>
+
   </div>
 
   <div class="toast" id="toast"></div>
@@ -174,7 +318,6 @@
     import { ensureProfile, logout, toast } from "./assets/app.js";
 
     const el = (id)=>document.getElementById(id);
-
     const ctx = await ensureProfile();
     if(!ctx) throw new Error("no session");
     const { user, prof } = ctx;
@@ -195,7 +338,53 @@
     const backUrl = "negociacoes.html" + (backParams.toString() ? `?${backParams.toString()}` : "");
     el("btnVoltar").href = backUrl;
 
-    async function load(){
+    function pillClass(status){
+      if(status==="ativo") return "pill pillAtv";
+      if(status==="sem_interesse") return "pill pillSem";
+      return "pill pillNeg";
+    }
+    function statusLabel(s){
+      if(s==="ativo") return "Ativo";
+      if(s==="sem_interesse") return "Sem interesse";
+      return "Em negociação";
+    }
+    function fmtDT(iso){
+      if(!iso) return "—";
+      return new Date(iso).toLocaleString("pt-BR");
+    }
+    function numOrNull(v){
+      if(v === "" || v === null || v === undefined) return null;
+      const n = Number(v);
+      return isNaN(n) ? null : n;
+    }
+    function getProxAcaoTexto(tipoSel, outroSel){
+      const tipo = (tipoSel.value || "").trim();
+      if(!tipo) return null;
+      if(tipo === "Outro") return (outroSel.value || "").trim() || "Outro";
+      return tipo;
+    }
+
+    // espelha prox_acao a partir do select
+    el("prox_acao_tipo").addEventListener("change", ()=>{
+      el("prox_acao_outro").style.display = (el("prox_acao_tipo").value === "Outro") ? "block" : "none";
+      el("prox_acao").value = getProxAcaoTexto(el("prox_acao_tipo"), el("prox_acao_outro")) || "";
+    });
+    el("prox_acao_outro").addEventListener("input", ()=>{
+      el("prox_acao").value = getProxAcaoTexto(el("prox_acao_tipo"), el("prox_acao_outro")) || "";
+    });
+
+    // log prox
+    el("log_prox_tipo").addEventListener("change", ()=>{
+      el("log_prox_outro").style.display = (el("log_prox_tipo").value === "Outro") ? "block" : "none";
+    });
+
+    // vegas pay toggle
+    function showVegasPayBox(){
+      el("boxVegasPay").style.display = (el("produto").value === "vegaspay") ? "block" : "none";
+    }
+    el("produto").addEventListener("change", showVegasPayBox);
+
+    async function loadAction(){
       const { data, error } = await sb
         .from("actions")
         .select("*")
@@ -204,7 +393,7 @@
 
       if(error){
         toast("Erro ao carregar: " + error.message);
-        return;
+        return null;
       }
 
       el("cliente_nome").textContent = data.cliente_nome || "—";
@@ -212,23 +401,30 @@
         `${data.cidade || ""}${data.uf ? " • " + data.uf : ""}${data.cnpj ? " • " + data.cnpj : ""}`;
 
       el("produto").value = data.produto || "vegaspay";
+      showVegasPayBox();
+
       el("status").value = data.status || "negociacao";
       el("volume").value = (data.volume ?? "");
       el("qtd").value = (data.qtd ?? "");
       el("obs").value = (data.obs ?? "");
-      el("prox_acao").value = (data.prox_acao ?? "");
 
+      // prox ação padronizada
+      const tipo = (data.prox_acao_tipo ?? "");
+      el("prox_acao_tipo").value = tipo;
+      el("prox_acao_outro").value = (data.prox_acao_outro ?? "");
+      el("prox_acao_outro").style.display = (tipo === "Outro") ? "block" : "none";
+      el("prox_acao").value = (data.prox_acao ?? getProxAcaoTexto(el("prox_acao_tipo"), el("prox_acao_outro")) ?? "");
+
+      // prox_data
       if(data.prox_data){
         const d = new Date(data.prox_data);
         const yyyy = d.getFullYear();
         const mm = String(d.getMonth()+1).padStart(2,"0");
         const dd = String(d.getDate()).padStart(2,"0");
         el("prox_data").value = `${yyyy}-${mm}-${dd}`;
-      } else {
-        el("prox_data").value = "";
-      }
+      } else el("prox_data").value = "";
 
-      // novos campos
+      // contato/endereço
       el("contato_nome").value = (data.contato_nome ?? "");
       el("contato_telefone").value = (data.contato_telefone ?? "");
       el("contato_email").value = (data.contato_email ?? "");
@@ -238,32 +434,89 @@
       el("cidade").value = (data.cidade ?? "");
       el("uf").value = (data.uf ?? "");
 
+      // vegas pay extras
+      el("vp_movimentacao").value = (data.vp_movimentacao ?? "");
+      el("vp_modalidade_credito").value = (data.vp_modalidade_credito ?? "");
+      el("vp_taxa_debito_atual").value = (data.vp_taxa_debito_atual ?? "");
+      el("vp_taxa_debito_oferta").value = (data.vp_taxa_debito_oferta ?? "");
+      el("vp_taxa_credito_atual").value = (data.vp_taxa_credito_atual ?? "");
+      el("vp_taxa_credito_oferta").value = (data.vp_taxa_credito_oferta ?? "");
+
       el("last").textContent =
         `Última atualização: ${data.updated_at ? new Date(data.updated_at).toLocaleString("pt-BR") : "—"}`;
+
+      return data;
     }
 
-    async function save(goBack=false){
+    async function loadTimeline(){
+      const { data, error } = await sb
+        .from("action_logs")
+        .select("id, status, prox_acao, note, created_at, user_id")
+        .eq("action_id", actionId)
+        .order("created_at", { ascending: false });
+
+      if(error){
+        console.warn(error);
+        el("timeline").innerHTML = "";
+        el("emptyTimeline").style.display = "block";
+        return;
+      }
+
+      const list = data || [];
+      el("emptyTimeline").style.display = list.length ? "none" : "block";
+
+      el("timeline").innerHTML = list.map(item => `
+        <div class="tItem">
+          <div class="tTop">
+            <div>
+              <span class="${pillClass(item.status)}">${statusLabel(item.status)}</span>
+              <span class="tMeta"> • ${fmtDT(item.created_at)}</span>
+              ${item.prox_acao ? `<div class="small muted" style="margin-top:6px">Próxima: <b>${item.prox_acao}</b></div>` : ``}
+            </div>
+            <div class="tMeta">${item.user_id === user.id ? "Você" : ""}</div>
+          </div>
+          ${item.note ? `<div style="margin-top:8px">${item.note}</div>` : `<div class="small muted" style="margin-top:8px">Sem comentário.</div>`}
+        </div>
+      `).join("");
+    }
+
+    async function saveSummary(goBack=false){
       el("btnSalvar").disabled = true;
       el("btnSalvarVoltar").disabled = true;
+
+      const proxTxt = getProxAcaoTexto(el("prox_acao_tipo"), el("prox_acao_outro"));
 
       const payload = {
         produto: el("produto").value,
         status: el("status").value,
-        volume: el("volume").value ? Number(el("volume").value) : null,
+
+        volume: numOrNull(el("volume").value),
         qtd: el("qtd").value ? Number(el("qtd").value) : null,
+
         obs: el("obs").value || null,
-        prox_acao: el("prox_acao").value || null,
+
+        prox_acao_tipo: el("prox_acao_tipo").value || null,
+        prox_acao_outro: el("prox_acao_outro").value || null,
+        prox_acao: proxTxt,
         prox_data: el("prox_data").value || null,
 
-        // contato/endereço
         contato_nome: el("contato_nome").value || null,
         contato_telefone: el("contato_telefone").value || null,
         contato_email: el("contato_email").value || null,
+
         endereco: el("endereco").value || null,
         bairro: el("bairro").value || null,
         cep: el("cep").value || null,
         cidade: el("cidade").value || null,
         uf: (el("uf").value || "").toUpperCase() || null,
+
+        // vegas pay extras
+        vp_movimentacao: el("produto").value === "vegaspay" ? numOrNull(el("vp_movimentacao").value) : null,
+        vp_modalidade_credito: el("produto").value === "vegaspay" ? (el("vp_modalidade_credito").value || null) : null,
+        vp_taxa_debito_atual: el("produto").value === "vegaspay" ? numOrNull(el("vp_taxa_debito_atual").value) : null,
+        vp_taxa_debito_oferta: el("produto").value === "vegaspay" ? numOrNull(el("vp_taxa_debito_oferta").value) : null,
+        vp_taxa_credito_atual: el("produto").value === "vegaspay" ? numOrNull(el("vp_taxa_credito_atual").value) : null,
+        vp_taxa_credito_oferta: el("produto").value === "vegaspay" ? numOrNull(el("vp_taxa_credito_oferta").value) : null,
 
         updated_at: new Date().toISOString()
       };
@@ -282,15 +535,96 @@
       }
 
       toast("✅ Salvo!");
-      await load();
+      await loadAction();
 
       if(goBack) window.location.href = backUrl;
     }
 
-    el("btnSalvar").addEventListener("click", ()=>save(false));
-    el("btnSalvarVoltar").addEventListener("click", ()=>save(true));
+    // UI toggle do novo log
+    el("btnToggleNovo").addEventListener("click", ()=>{
+      const box = el("boxNovoLog");
+      box.style.display = (box.style.display === "none" || !box.style.display) ? "block" : "none";
+    });
+    el("btnCancelarLog").addEventListener("click", ()=>{
+      el("boxNovoLog").style.display = "none";
+      el("log_status").value = "";
+      el("log_prox_tipo").value = "";
+      el("log_prox_outro").value = "";
+      el("log_prox_outro").style.display = "none";
+      el("log_prox_data").value = "";
+      el("log_note").value = "";
+    });
 
-    await load();
+    async function registrarLog(){
+      el("btnSalvarLog").disabled = true;
+
+      const statusNovo = el("log_status").value || null;
+      const proxNovo = getProxAcaoTexto(el("log_prox_tipo"), el("log_prox_outro"));
+      const proxData = el("log_prox_data").value || null;
+      const note = el("log_note").value || null;
+
+      // 1) insere no histórico
+      const { error: logErr } = await sb
+        .from("action_logs")
+        .insert({
+          action_id: actionId,
+          user_id: user.id,
+          status: statusNovo || el("status").value, // sempre registra algum status
+          prox_acao: proxNovo || null,
+          note: note
+        });
+
+      if(logErr){
+        el("btnSalvarLog").disabled = false;
+        toast("Erro histórico: " + logErr.message);
+        return;
+      }
+
+      // 2) atualiza o resumo (só se tiver mudanças)
+      const patch = {
+        updated_at: new Date().toISOString()
+      };
+
+      if(statusNovo) patch.status = statusNovo;
+
+      if(el("log_prox_tipo").value){
+        patch.prox_acao_tipo = el("log_prox_tipo").value || null;
+        patch.prox_acao_outro = el("log_prox_outro").value || null;
+        patch.prox_acao = proxNovo;
+      }
+
+      if(proxData) patch.prox_data = proxData;
+
+      // sempre salva um resumo mínimo no obs? (opcional)
+      // se quiser, comenta a linha abaixo
+      // if(note) patch.obs = (el("obs").value ? (el("obs").value + "\n") : "") + `• ${new Date().toLocaleDateString("pt-BR")}: ${note}`;
+
+      const { error: upErr } = await sb
+        .from("actions")
+        .update(patch)
+        .eq("id", actionId);
+
+      el("btnSalvarLog").disabled = false;
+
+      if(upErr){
+        toast("Histórico salvo, mas resumo falhou: " + upErr.message);
+      } else {
+        toast("✅ Ação registrada!");
+      }
+
+      // limpa e recarrega
+      el("btnCancelarLog").click();
+      await loadAction();
+      await loadTimeline();
+    }
+
+    el("btnSalvarLog").addEventListener("click", registrarLog);
+
+    el("btnSalvar").addEventListener("click", ()=>saveSummary(false));
+    el("btnSalvarVoltar").addEventListener("click", ()=>saveSummary(true));
+
+    await loadAction();
+    await loadTimeline();
   </script>
 </body>
 </html>
