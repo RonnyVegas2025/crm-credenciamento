@@ -130,6 +130,12 @@
       throw new Error("missing id");
     }
 
+    // ✅ monta URL de volta preservando filtros
+    const backParams = new URLSearchParams(location.search);
+    backParams.delete("id");
+    const backUrl = "negociacoes.html" + (backParams.toString() ? `?${backParams.toString()}` : "");
+    el("btnVoltar").href = backUrl;
+
     // 3) carrega o registro
     async function load(){
       const { data, error } = await sb
@@ -183,7 +189,7 @@
         obs: el("obs").value || null,
         prox_acao: el("prox_acao").value || null,
 
-        // ✅ ajuste: salva date como YYYY-MM-DD (evita dor de cabeça de fuso)
+        // ✅ salva date como YYYY-MM-DD
         prox_data: el("prox_data").value || null,
 
         updated_at: new Date().toISOString()
@@ -206,7 +212,7 @@
       await load();
 
       if(goBack){
-        window.location.href = "negociacoes.html";
+        window.location.href = backUrl;  // ✅ volta mantendo filtros
       }
     }
 
