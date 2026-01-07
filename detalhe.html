@@ -24,6 +24,35 @@
     </div>
 
     <!-- CARD PRINCIPAL -->
+    <!-- VISÃO DO CLIENTE (PRODUTOS + TERMÔMETRO) -->
+<div class="card" style="margin-top:12px">
+  <div class="grid2" style="align-items:center">
+    <div>
+      <div class="label" style="font-weight:900">Produtos deste cliente</div>
+      <div class="small muted">Clique em um produto para abrir a negociação correspondente.</div>
+    </div>
+
+    <div style="text-align:right">
+      <a class="btn btnGreen" id="btnNovaNegociacao" href="nova.html">+ Nova negociação</a>
+    </div>
+  </div>
+
+  <div style="height:10px"></div>
+
+  <!-- Termômetro -->
+  <div style="display:flex;gap:12px;align-items:center">
+    <div style="flex:1;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;height:12px">
+      <div id="termFill" style="height:12px;width:0%"></div>
+    </div>
+    <div class="small" id="termText" style="min-width:130px;text-align:right;opacity:.85">0/5</div>
+  </div>
+
+  <div style="height:12px"></div>
+
+  <!-- Lista -->
+  <div id="produtosCliente" class="grid2"></div>
+</div>
+
     <div class="card" style="margin-top:12px">
       <div class="grid2">
         <div>
