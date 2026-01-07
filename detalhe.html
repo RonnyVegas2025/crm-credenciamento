@@ -6,6 +6,27 @@
   <title>Detalhe</title>
   <link rel="stylesheet" href="assets/app.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ajuda visual p/ ícones em fundo escuro */
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: .8; }
+    .pill{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 10px;border-radius:999px;
+      background:rgba(255,255,255,.10);
+      font-size:12px;font-weight:800
+    }
+    .pill.ok{ background:rgba(0,255,140,.16); }
+    .pill.mid{ background:rgba(255,200,0,.16); }
+    .pill.bad{ background:rgba(255,80,80,.16); }
+    .muted{ opacity:.75 }
+    .rowline{ border-top:1px solid rgba(255,255,255,.08); margin:14px 0; }
+    .tag{
+      display:inline-block;
+      padding:4px 8px;border-radius:999px;
+      background:rgba(255,255,255,.10);
+      font-size:12px;font-weight:800
+    }
+  </style>
 </head>
 
 <body>
@@ -23,103 +44,54 @@
       </div>
     </div>
 
-    <!-- CARD PRINCIPAL -->
-    <!-- VISÃO DO CLIENTE (PRODUTOS + TERMÔMETRO) -->
-<div class="card" style="margin-top:12px">
-  <div class="grid2" style="align-items:center">
-    <div>
-      <div class="label" style="font-weight:900">Produtos deste cliente</div>
-      <div class="small muted">Clique em um produto para abrir a negociação correspondente.</div>
-    </div>
-
-    <div style="text-align:right">
-      <a class="btn btnGreen" id="btnNovaNegociacao" href="nova.html">+ Nova negociação</a>
-    </div>
-  </div>
-
-  <div style="height:10px"></div>
-
-  <!-- Termômetro -->
-  <div style="display:flex;gap:12px;align-items:center">
-    <div style="flex:1;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;height:12px">
-      <div id="termFill" style="height:12px;width:0%"></div>
-    </div>
-    <div class="small" id="termText" style="min-width:130px;text-align:right;opacity:.85">0/5</div>
-  </div>
-
-  <div style="height:12px"></div>
-
-  <!-- Lista -->
-  <div id="produtosCliente" class="grid2"></div>
-</div>
-
+    <!-- CABEÇALHO DO CLIENTE -->
     <div class="card" style="margin-top:12px">
       <div class="grid2">
         <div>
           <div class="label">Cliente</div>
-          <div id="cliente_nome" style="font-weight:800">Carregando…</div>
+          <div id="cliente_nome" style="font-weight:900;font-size:18px">Carregando…</div>
           <div class="small" id="cliente_meta"></div>
+          <div style="margin-top:10px">
+            <span class="tag" id="tagProduto">Produto: —</span>
+          </div>
         </div>
 
-        <div style="text-align:right; display:flex; gap:10px; justify-content:flex-end; align-items:center">
+        <div style="text-align:right">
           <a class="btn" href="negociacoes.html" id="btnVoltar">← Voltar</a>
-          <a class="btn btnGreen" href="#" id="btnWhats" style="display:none">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISÃO DO CLIENTE (PRODUTOS + TERMÔMETRO) -->
+    <div class="card" style="margin-top:12px">
+      <div class="grid2" style="align-items:center">
+        <div>
+          <div class="label" style="font-weight:900">Produtos deste cliente</div>
+          <div class="small muted">Clique num produto pra abrir a negociação correspondente.</div>
+        </div>
+
+        <div style="text-align:right">
+          <a class="btn btnGreen" id="btnNovaNegociacao" href="nova.html">+ Nova negociação</a>
         </div>
       </div>
 
-      <div style="height:14px"></div>
+      <div style="height:10px"></div>
 
-      <!-- CONTATO / ENDEREÇO -->
-      <div class="grid2">
-        <div>
-          <div class="label">Contato (nome)</div>
-          <input id="contato_nome" type="text" placeholder="Ex: João da Padaria">
+      <!-- Termômetro -->
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="flex:1;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;height:12px">
+          <div id="termFill" style="height:12px;width:0%"></div>
         </div>
-        <div>
-          <div class="label">Telefone (Whats)</div>
-          <input id="contato_telefone" type="text" placeholder="Ex: 11999998888">
-        </div>
-      </div>
-
-      <div style="height:12px"></div>
-
-      <div class="grid2">
-        <div>
-          <div class="label">E-mail</div>
-          <input id="contato_email" type="email" placeholder="Ex: contato@empresa.com">
-        </div>
-        <div>
-          <div class="label">UF</div>
-          <input id="uf" type="text" maxlength="2" placeholder="SP">
-        </div>
+        <div class="small" id="termText" style="min-width:130px;text-align:right;opacity:.85">0/5</div>
       </div>
 
       <div style="height:12px"></div>
 
-      <div class="grid2">
-        <div>
-          <div class="label">Endereço</div>
-          <input id="endereco" type="text" placeholder="Rua, número">
-        </div>
-        <div>
-          <div class="label">Bairro</div>
-          <input id="bairro" type="text" placeholder="Ex: Centro">
-        </div>
-      </div>
+      <div id="produtosCliente" class="grid2"></div>
+    </div>
 
-      <div style="height:12px"></div>
-
-      <div class="grid2">
-        <div>
-          <div class="label">CEP</div>
-          <input id="cep" type="text" placeholder="Ex: 13400-000">
-        </div>
-        <div></div>
-      </div>
-
-      <div style="height:18px"></div>
-
-      <!-- NEGOCIAÇÃO -->
+    <!-- DADOS DA NEGOCIAÇÃO (EDITÁVEIS) -->
+    <div class="card" style="margin-top:12px">
       <div class="grid2">
         <div>
           <div class="label">Produto</div>
@@ -158,9 +130,55 @@
 
       <div style="height:12px"></div>
 
-      <div>
-        <div class="label">Observações (resumo)</div>
-        <textarea id="obs" rows="3" placeholder="Resumo rápido do cenário atual (as ações detalhadas ficam no histórico)."></textarea>
+      <!-- CONTATO + ENDEREÇO -->
+      <div class="grid2">
+        <div>
+          <div class="label">Contato (nome)</div>
+          <input id="contato_nome" type="text" placeholder="Ex: João Silva">
+        </div>
+        <div>
+          <div class="label">Telefone (WhatsApp)</div>
+          <input id="contato_telefone" type="text" placeholder="Ex: 19 99999-9999">
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">E-mail</div>
+          <input id="contato_email" type="email" placeholder="Ex: contato@empresa.com.br">
+        </div>
+        <div>
+          <div class="label">Endereço</div>
+          <input id="endereco" type="text" placeholder="Rua / Av, número">
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Bairro</div>
+          <input id="bairro" type="text" placeholder="Ex: Centro">
+        </div>
+        <div>
+          <div class="label">CEP</div>
+          <input id="cep" type="text" placeholder="Ex: 13400-000">
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">UF</div>
+          <input id="uf" type="text" maxlength="2" placeholder="Ex: SP">
+        </div>
+        <div>
+          <div class="label">Observação rápida (campo atual)</div>
+          <input id="obs" type="text" placeholder="Ex: Taxa atual tal, objeção tal…">
+        </div>
       </div>
 
       <div style="height:12px"></div>
@@ -193,27 +211,26 @@
         <div>
           <div class="label" style="font-weight:900">Histórico (linha do tempo)</div>
           <div class="small muted">O que aconteceu de verdade (data/hora + status + comentário).</div>
-
-          <!-- ✅ LEGENDA DO HISTÓRICO (produto/status da negociação atual) -->
-          <div class="small" id="histLegenda" style="margin-top:6px;opacity:.85"></div>
+          <div style="margin-top:10px">
+            <span class="tag" id="tagTimelineProduto">Produto desta linha do tempo: —</span>
+          </div>
         </div>
-
         <div style="text-align:right">
-          <button class="btn btnGreen" id="btnNovaAcao">+ Registrar nova ação</button>
+          <button class="btn" id="btnNovaTimeline">+ Registrar nova ação</button>
         </div>
       </div>
 
-      <div style="height:10px"></div>
+      <div class="rowline"></div>
 
       <div id="timeline"></div>
-      <div class="small" id="timelineEmpty" style="display:none;opacity:.7">Sem histórico ainda.</div>
 
-      <!-- FORM NOVA AÇÃO (toggle) -->
-      <div id="formAcao" style="display:none;margin-top:12px">
+      <div class="rowline"></div>
+
+      <div id="formTimeline" style="display:none">
         <div class="grid2">
           <div>
-            <div class="label">Status desta ação</div>
-            <select id="t_status">
+            <div class="label">Status</div>
+            <select id="tl_status">
               <option value="negociacao">Em negociação</option>
               <option value="ativo">Ativo</option>
               <option value="sem_interesse">Sem interesse</option>
@@ -221,31 +238,26 @@
           </div>
           <div>
             <div class="label">Próxima ação</div>
-            <input id="t_prox_acao" type="text" placeholder="Ex: Fazer ligação">
-          </div>
-        </div>
-
-        <div style="height:10px"></div>
-
-        <div class="grid2">
-          <div>
-            <div class="label">Data da próxima</div>
-            <input id="t_prox_data" type="date">
-          </div>
-          <div>
-            <div class="label">Comentário</div>
-            <input id="t_texto" type="text" placeholder="Ex: Cliente pediu taxa melhor no crédito.">
+            <input id="tl_prox" type="text" placeholder="Ex: Fazer ligação">
           </div>
         </div>
 
         <div style="height:12px"></div>
 
+        <div>
+          <div class="label">Comentário</div>
+          <textarea id="tl_msg" rows="3" placeholder="Ex: Liguei, pediu proposta, retorno amanhã…"></textarea>
+        </div>
+
+        <div style="height:12px"></div>
+
         <div class="grid2">
-          <button class="btn" id="btnCancelarAcao">Cancelar</button>
-          <button class="btn btnGreen" id="btnSalvarAcao">Salvar no histórico</button>
+          <button class="btn" id="btnSalvarTimeline">Salvar no histórico</button>
+          <button class="btn" id="btnCancelarTimeline">Cancelar</button>
         </div>
       </div>
     </div>
+
   </div>
 
   <div class="toast" id="toast"></div>
@@ -259,9 +271,13 @@
     // labels
     const pLabel=(p)=>p==="vegaspay"?"Vegas Pay":p==="agregados"?"Agregados":p==="cartoes"?"Cartões":p==="credenciamento"?"Credenciamento":"Clube";
     const statusLabel=(s)=>s==="ativo"?"Ativo":(s==="negociacao"?"Em negociação":"Sem interesse");
-    const fmtDateTime=(iso)=>iso?new Date(iso).toLocaleString("pt-BR"):"—";
 
-    // sessão + perfil
+    const fmtDateTime=(iso)=>{
+      if(!iso) return "—";
+      return new Date(iso).toLocaleString("pt-BR");
+    };
+
+    // 1) sessão + perfil
     const ctx = await ensureProfile();
     if(!ctx) throw new Error("no session");
     const { user, prof } = ctx;
@@ -269,7 +285,7 @@
     el("who").textContent = `${prof.nome || ""} • ${prof.role}`;
     el("btnLogout").addEventListener("click",(e)=>{ e.preventDefault(); logout(); });
 
-    // pega id da URL
+    // 2) pega id da URL
     const params = new URLSearchParams(location.search);
     const actionId = params.get("id");
     if(!actionId){
@@ -277,9 +293,101 @@
       throw new Error("missing id");
     }
 
+    const ALL_PRODUCTS = ["vegaspay","agregados","cartoes","credenciamento","clube"];
     let currentAction = null;
 
-    // carrega a negociação
+    function pillClass(status){
+      if(status==="ativo") return "ok";
+      if(status==="negociacao") return "mid";
+      return "bad";
+    }
+
+    function pillHtml(status){
+      const label = statusLabel(status || "negociacao");
+      return `<span class="pill ${pillClass(status)}">${label}</span>`;
+    }
+
+    // pega o “último status” por produto
+    function lastByProduct(rows){
+      const map = new Map();
+      rows.forEach(r=>{
+        const key = r.produto || "vegaspay";
+        const prev = map.get(key);
+        if(!prev) map.set(key, r);
+        else {
+          const a = new Date(prev.updated_at || prev.created_at || 0).getTime();
+          const b = new Date(r.updated_at || r.created_at || 0).getTime();
+          if(b >= a) map.set(key, r);
+        }
+      });
+      return map;
+    }
+
+    async function loadClientPanel(){
+      if(!currentAction?.client_id){
+        el("produtosCliente").innerHTML = `<div class="small" style="opacity:.75">Sem client_id para agrupar negociações deste cliente.</div>`;
+        return;
+      }
+
+      const { data, error } = await sb
+        .from("actions")
+        .select("id, produto, status, volume, updated_at, created_at, client_id, cliente_nome")
+        .eq("client_id", currentAction.client_id);
+
+      if(error){
+        toast("Erro painel cliente: " + error.message);
+        return;
+      }
+
+      const rows = data || [];
+      const byProd = lastByProduct(rows);
+
+      const uniqueCount = byProd.size;
+      const total = ALL_PRODUCTS.length;
+      const pct = Math.round((uniqueCount / total) * 100);
+
+      const fill = el("termFill");
+      fill.style.width = pct + "%";
+      fill.style.background = pct >= 80 ? "rgba(0,255,140,.75)" : pct >= 40 ? "rgba(255,200,0,.75)" : "rgba(255,80,80,.75)";
+      fill.style.borderRadius = "999px";
+
+      el("termText").textContent = `${uniqueCount}/${total} (${pct}%)`;
+
+      el("btnNovaNegociacao").href =
+        `nova.html?client_id=${encodeURIComponent(currentAction.client_id)}&cliente_nome=${encodeURIComponent(currentAction.cliente_nome||"")}`;
+
+      const cards = ALL_PRODUCTS.map(p=>{
+        const r = byProd.get(p);
+        const active = (currentAction.produto === p) ? 'style="outline:2px solid rgba(255,255,255,.25)"' : "";
+        if(!r){
+          return `
+            <div class="card" ${active} style="padding:14px;cursor:pointer;opacity:.85"
+                 onclick="window.location.href='nova.html?client_id=${encodeURIComponent(currentAction.client_id)}&produto=${encodeURIComponent(p)}&cliente_nome=${encodeURIComponent(currentAction.cliente_nome||"")}'">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div style="font-weight:900">${pLabel(p)}</div>
+                <div class="small" style="opacity:.75">não iniciado</div>
+              </div>
+              <div class="small" style="opacity:.7;margin-top:8px">Clique para criar</div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="card" ${active} style="padding:14px;cursor:pointer"
+               onclick="window.location.href='detalhe.html?id=${r.id}'">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:900">${pLabel(p)}</div>
+              ${pillHtml(r.status)}
+            </div>
+            <div class="small" style="opacity:.75;margin-top:8px">Atualizado: ${fmtDateTime(r.updated_at)}</div>
+          </div>
+        `;
+      }).join("");
+
+      el("produtosCliente").innerHTML = cards;
+    }
+
+    // 3) carrega o registro atual
     async function loadAction(){
       const { data, error } = await sb
         .from("actions")
@@ -289,25 +397,13 @@
 
       if(error){
         toast("Erro ao carregar: " + error.message);
-        return null;
+        return;
       }
 
       currentAction = data;
 
-      // cliente
       el("cliente_nome").textContent = data.cliente_nome || "—";
       el("cliente_meta").textContent = `${data.cidade || ""}${data.cnpj ? " • " + data.cnpj : ""}`;
-
-      // campos de contato/endereço
-      el("contato_nome").value = data.contato_nome ?? "";
-      el("contato_telefone").value = data.contato_telefone ?? "";
-      el("contato_email").value = data.contato_email ?? "";
-      el("endereco").value = data.endereco ?? "";
-      el("bairro").value = data.bairro ?? "";
-      el("uf").value = (data.uf ?? "");
-      el("cep").value = data.cep ?? "";
-
-      // editáveis negociação
       el("produto").value = data.produto || "vegaspay";
       el("status").value = data.status || "negociacao";
       el("volume").value = (data.volume ?? "");
@@ -315,46 +411,200 @@
       el("obs").value = (data.obs ?? "");
       el("prox_acao").value = (data.prox_acao ?? "");
 
-      // prox_data como yyyy-mm-dd
-      el("prox_data").value = data.prox_data ? String(data.prox_data).slice(0,10) : "";
+      // novos campos
+      el("contato_nome").value = (data.contato_nome ?? "");
+      el("contato_telefone").value = (data.contato_telefone ?? "");
+      el("contato_email").value = (data.contato_email ?? "");
+      el("endereco").value = (data.endereco ?? "");
+      el("bairro").value = (data.bairro ?? "");
+      el("uf").value = (data.uf ?? "");
+      el("cep").value = (data.cep ?? "");
+
+      el("tagProduto").textContent = `Produto: ${pLabel(data.produto || "vegaspay")}`;
+      el("tagTimelineProduto").textContent = `Produto desta linha do tempo: ${pLabel(data.produto || "vegaspay")}`;
+
+      if(data.prox_data){
+        // prox_data como YYYY-MM-DD
+        el("prox_data").value = String(data.prox_data).slice(0,10);
+      } else {
+        el("prox_data").value = "";
+      }
 
       el("last").textContent =
         `Última atualização: ${data.updated_at ? new Date(data.updated_at).toLocaleString("pt-BR") : "—"}`;
-
-      // ✅ LEGENDA DO HISTÓRICO (produto/status da negociação atual)
-      el("histLegenda").innerHTML =
-        `📌 <b>Histórico desta negociação</b> — Produto: <b>${pLabel(data.produto || "vegaspay")}</b> • Status: <b>${statusLabel(data.status || "negociacao")}</b>`;
-
-      // Whats
-      const tel = (data.contato_telefone || "").replace(/\D/g,"");
-      if(tel.length >= 10){
-        el("btnWhats").style.display = "inline-flex";
-        el("btnWhats").href = `https://wa.me/55${tel}`;
-        el("btnWhats").target = "_blank";
-        el("btnWhats").rel = "noopener";
-      } else {
-        el("btnWhats").style.display = "none";
-      }
-
-      return data;
     }
 
-    // salvar alterações (update)
+    // 4) timeline: vamos salvar em actions.obs_history (se existir) OU usar obs como histórico simples
+    // Como você ainda não criou tabela separada, vou usar um campo JSON no próprio obs_history se existir.
+    // Se não existir, a timeline vira "simulada" lendo do obs (fica só 1 texto).
+    async function hasColumn(table, column){
+      // check via tentativa de select do campo
+      const { error } = await sb.from(table).select(column).limit(1);
+      return !error;
+    }
+
+    const useObsHistory = await hasColumn("actions","obs_history");
+
+    function renderTimeline(items){
+      if(!items || !items.length){
+        el("timeline").innerHTML = `<div class="small muted">Sem histórico ainda. Clique em “Registrar nova ação”.</div>`;
+        return;
+      }
+
+      el("timeline").innerHTML = items
+        .slice()
+        .sort((a,b)=>new Date(b.at).getTime()-new Date(a.at).getTime())
+        .map(it=>`
+          <div style="padding:12px;border-radius:16px;background:rgba(255,255,255,.06);margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <span class="pill ${pillClass(it.status)}">${statusLabel(it.status)}</span>
+                <span class="small" style="opacity:.85">${fmtDateTime(it.at)}</span>
+                <span class="small" style="opacity:.75">Produto: <b>${pLabel(it.produto || currentAction?.produto || "vegaspay")}</b></span>
+              </div>
+              <div class="small" style="opacity:.75">${it.by || "Você"}</div>
+            </div>
+
+            <div class="small" style="opacity:.85;margin-top:6px">
+              Próxima: <b>${it.prox || "—"}</b>
+            </div>
+
+            <div style="margin-top:10px;font-size:16px;font-weight:700">
+              ${String(it.msg || "").replaceAll("<","&lt;")}
+            </div>
+          </div>
+        `).join("");
+    }
+
+    async function loadTimeline(){
+      if(!currentAction) return;
+
+      if(useObsHistory){
+        const { data, error } = await sb
+          .from("actions")
+          .select("obs_history")
+          .eq("id", actionId)
+          .single();
+
+        if(error){
+          toast("Erro histórico: " + error.message);
+          return;
+        }
+        renderTimeline(data?.obs_history || []);
+      } else {
+        // fallback
+        if(currentAction.obs){
+          renderTimeline([{
+            at: currentAction.updated_at || new Date().toISOString(),
+            status: currentAction.status || "negociacao",
+            prox: currentAction.prox_acao || null,
+            msg: currentAction.obs,
+            by: "Você",
+            produto: currentAction.produto
+          }]);
+        } else {
+          renderTimeline([]);
+        }
+      }
+    }
+
+    function openTimelineForm(){
+      el("formTimeline").style.display = "block";
+      el("tl_status").value = el("status").value || "negociacao";
+      el("tl_prox").value = el("prox_acao").value || "";
+      el("tl_msg").value = "";
+      el("tl_msg").focus();
+    }
+
+    function closeTimelineForm(){
+      el("formTimeline").style.display = "none";
+    }
+
+    async function saveTimeline(){
+      if(!currentAction) return;
+
+      const msg = el("tl_msg").value.trim();
+      if(!msg){
+        toast("Escreve pelo menos uma linha no comentário 🙂");
+        return;
+      }
+
+      const item = {
+        at: new Date().toISOString(),
+        status: el("tl_status").value || "negociacao",
+        prox: el("tl_prox").value || null,
+        msg,
+        by: prof?.nome || "Você",
+        produto: currentAction.produto
+      };
+
+      el("btnSalvarTimeline").disabled = true;
+
+      if(useObsHistory){
+        const { data: cur, error: e1 } = await sb
+          .from("actions")
+          .select("obs_history")
+          .eq("id", actionId)
+          .single();
+
+        if(e1){
+          el("btnSalvarTimeline").disabled = false;
+          toast("Erro: " + e1.message);
+          return;
+        }
+
+        const list = Array.isArray(cur?.obs_history) ? cur.obs_history : [];
+        list.push(item);
+
+        const { error: e2 } = await sb
+          .from("actions")
+          .update({
+            obs_history: list,
+            status: item.status,
+            prox_acao: item.prox,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", actionId);
+
+        el("btnSalvarTimeline").disabled = false;
+
+        if(e2){
+          toast("Erro ao salvar histórico: " + e2.message);
+          return;
+        }
+      } else {
+        // fallback: salva msg no obs e atualiza status/prox
+        const { error: e2 } = await sb
+          .from("actions")
+          .update({
+            obs: msg,
+            status: item.status,
+            prox_acao: item.prox,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", actionId);
+
+        el("btnSalvarTimeline").disabled = false;
+
+        if(e2){
+          toast("Erro ao salvar: " + e2.message);
+          return;
+        }
+      }
+
+      toast("✅ Histórico registrado!");
+      closeTimelineForm();
+      await loadAction();
+      await loadClientPanel();
+      await loadTimeline();
+    }
+
+    // 5) salvar (update)
     async function save(goBack=false){
       el("btnSalvar").disabled = true;
       el("btnSalvarVoltar").disabled = true;
 
       const payload = {
-        // contato/endereço
-        contato_nome: el("contato_nome").value || null,
-        contato_telefone: el("contato_telefone").value || null,
-        contato_email: el("contato_email").value || null,
-        endereco: el("endereco").value || null,
-        bairro: el("bairro").value || null,
-        uf: (el("uf").value || "").toUpperCase() || null,
-        cep: el("cep").value || null,
-
-        // negociação
         produto: el("produto").value,
         status: el("status").value,
         volume: el("volume").value ? Number(el("volume").value) : null,
@@ -362,7 +612,13 @@
         obs: el("obs").value || null,
         prox_acao: el("prox_acao").value || null,
         prox_data: el("prox_data").value || null,
-
+        contato_nome: el("contato_nome").value || null,
+        contato_telefone: el("contato_telefone").value || null,
+        contato_email: el("contato_email").value || null,
+        endereco: el("endereco").value || null,
+        bairro: el("bairro").value || null,
+        uf: (el("uf").value || "").toUpperCase() || null,
+        cep: el("cep").value || null,
         updated_at: new Date().toISOString()
       };
 
@@ -381,6 +637,7 @@
 
       toast("✅ Salvo!");
       await loadAction();
+      await loadClientPanel();
       await loadTimeline();
 
       if(goBack){
@@ -388,107 +645,17 @@
       }
     }
 
+    // listeners
     el("btnSalvar").addEventListener("click", ()=>save(false));
     el("btnSalvarVoltar").addEventListener("click", ()=>save(true));
 
-    // TIMELINE (histórico)
-    async function loadTimeline(){
-      const { data, error } = await sb
-        .from("action_history")
-        .select("*")
-        .eq("action_id", actionId)
-        .order("created_at", { ascending: false });
-
-      if(error){
-        toast("Erro ao carregar histórico: " + error.message);
-        return;
-      }
-
-      const list = data || [];
-      el("timelineEmpty").style.display = list.length ? "none" : "block";
-
-      el("timeline").innerHTML = list.map(i => {
-        const st = statusLabel(i.status);
-        const when = fmtDateTime(i.created_at);
-        const who = (i.user_id === user.id) ? "Você" : "Equipe";
-        const prox = i.prox_acao ? `Próxima: <b>${i.prox_acao}</b>${i.prox_data ? " • " + String(i.prox_data).slice(0,10) : ""}` : "—";
-        const txt = i.texto ? i.texto : "—";
-
-        return `
-          <div class="card" style="margin-top:10px;padding:14px">
-            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
-              <div>
-                <span class="pill">${st}</span>
-                <span class="small" style="margin-left:10px;opacity:.8">${when}</span>
-              </div>
-              <div class="small" style="opacity:.75">${who}</div>
-            </div>
-            <div class="small" style="margin-top:8px;opacity:.85">${prox}</div>
-            <div style="margin-top:8px;font-weight:700">${txt}</div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    // FORM nova ação (toggle)
-    const toggleForm = (show) => {
-      el("formAcao").style.display = show ? "block" : "none";
-      if(show){
-        el("t_status").value = el("status").value || "negociacao";
-        el("t_prox_acao").value = el("prox_acao").value || "";
-        el("t_prox_data").value = el("prox_data").value || "";
-        el("t_texto").value = "";
-      }
-    };
-
-    el("btnNovaAcao").addEventListener("click", ()=>toggleForm(true));
-    el("btnCancelarAcao").addEventListener("click", ()=>toggleForm(false));
-
-    // salva item na timeline + atualiza status/proxima na action
-    async function saveTimeline(){
-      el("btnSalvarAcao").disabled = true;
-
-      const tPayload = {
-        action_id: actionId,
-        user_id: user.id,
-        status: el("t_status").value,
-        prox_acao: el("t_prox_acao").value || null,
-        prox_data: el("t_prox_data").value || null,
-        texto: el("t_texto").value || null,
-        created_at: new Date().toISOString()
-      };
-
-      // 1) insere no histórico
-      const { error: e1 } = await sb.from("action_history").insert(tPayload);
-
-      // 2) atualiza o “estado atual” na actions também
-      const { error: e2 } = await sb
-        .from("actions")
-        .update({
-          status: el("t_status").value,
-          prox_acao: el("t_prox_acao").value || null,
-          prox_data: el("t_prox_data").value || null,
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", actionId);
-
-      el("btnSalvarAcao").disabled = false;
-
-      if(e1 || e2){
-        toast("Erro ao salvar histórico: " + (e1?.message || e2?.message));
-        return;
-      }
-
-      toast("✅ Histórico registrado!");
-      toggleForm(false);
-      await loadAction();
-      await loadTimeline();
-    }
-
-    el("btnSalvarAcao").addEventListener("click", saveTimeline);
+    el("btnNovaTimeline").addEventListener("click", openTimelineForm);
+    el("btnCancelarTimeline").addEventListener("click", closeTimelineForm);
+    el("btnSalvarTimeline").addEventListener("click", saveTimeline);
 
     // init
     await loadAction();
+    await loadClientPanel();
     await loadTimeline();
   </script>
 </body>
