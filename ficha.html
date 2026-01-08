@@ -7,513 +7,562 @@
   <link rel="stylesheet" href="assets/app.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 <body>
-<div class="wrap">
-  <div class="top">
-    <h1>Ficha de Credenciamento</h1>
-    <div class="sub" id="who">Carregando…</div>
+  <div class="wrap">
+    <div class="top">
+      <h1>Ficha de Credenciamento</h1>
+      <div class="sub" id="who">Carregando…</div>
 
-    <div class="nav">
-      <a href="dashboard.html">📊</a>
-      <a href="nova.html">➕</a>
-      <a href="negociacoes.html">📋</a>
-      <a href="mapa.html">📍</a>
-      <a href="ficha.html" title="Ficha">📝</a>
-      <a href="#" id="btnLogout">🚪</a>
+      <div class="nav">
+        <a href="dashboard.html">📊</a>
+        <a href="negociacoes.html">📋</a>
+        <a href="nova.html">➕</a>
+        <a href="fichas.html">🧾</a>
+        <a href="#" id="btnLogout">🚪</a>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="grid2">
+        <div>
+          <div class="label">Empresa do contrato</div>
+          <select id="empresa">
+            <option value="vegas">Vegas Card</option>
+            <option value="ms">M&S Benefícios</option>
+          </select>
+        </div>
+        <div style="text-align:right">
+          <a class="btn" href="fichas.html">← Voltar</a>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="label" style="font-weight:800">1) Dados do estabelecimento</div>
+      <div style="height:8px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Razão social</div>
+          <input id="razao_social" type="text" placeholder="Ex: Mercado Central LTDA">
+        </div>
+        <div>
+          <div class="label">Nome fantasia</div>
+          <input id="nome_fantasia" type="text" placeholder="Ex: Mercado Central">
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:12px">
+        <div>
+          <div class="label">CNPJ</div>
+          <input id="cnpj" type="text" placeholder="00.000.000/0000-00">
+        </div>
+        <div>
+          <div class="label">Inscrição Estadual</div>
+          <input id="inscr_estadual" type="text" placeholder="Opcional">
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="label">Ramo / Atividade</div>
+        <input id="ramo_atividade" type="text" placeholder="Ex: Restaurante / Supermercado / Farmácia…">
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="label" style="font-weight:800">2) Endereço</div>
+      <div style="height:8px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Endereço</div>
+          <input id="endereco" type="text" placeholder="Rua / Av…">
+        </div>
+        <div>
+          <div class="label">Número</div>
+          <input id="numero" type="text" placeholder="Ex: 123">
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:12px">
+        <div>
+          <div class="label">Complemento</div>
+          <input id="complemento" type="text" placeholder="Opcional">
+        </div>
+        <div>
+          <div class="label">Bairro</div>
+          <input id="bairro" type="text" placeholder="Ex: Centro">
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:12px">
+        <div>
+          <div class="label">Cidade</div>
+          <input id="cidade" type="text" placeholder="Ex: Americana">
+        </div>
+        <div class="grid2">
+          <div>
+            <div class="label">UF</div>
+            <select id="uf">
+              <option value="">Selecione…</option>
+              <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option>
+              <option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option>
+              <option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option>
+              <option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option>
+            </select>
+          </div>
+          <div>
+            <div class="label">CEP</div>
+            <input id="cep" type="text" placeholder="00000-000">
+          </div>
+        </div>
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="label" style="font-weight:800">3) Meios de captura</div>
+      <div class="small">Use a setinha pra não virar “Cidade do Jeito que Der™”.</div>
+      <div style="height:8px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Meio de captura</div>
+          <select id="meio_captura">
+            <option value="">Selecione…</option>
+            <option>VEGAS PAY</option>
+            <option>TEF SITEF</option>
+            <option>TEF CARD SE</option>
+            <option>TEF LINX</option>
+            <option>TEF RESOMAQ</option>
+            <option>CIELO</option>
+            <option>REDE</option>
+            <option>STONE</option>
+            <option>GETNET</option>
+            <option>PAGUE SEGURO</option>
+            <option>BIN</option>
+            <option>SIPAG</option>
+            <option>SAFRA PAY</option>
+            <option>SICREDI</option>
+            <option>ENTREPAY</option>
+            <option>ADIQ</option>
+            <option>AGILLE</option>
+            <option>GRUPO CARD</option>
+            <option>MEGA POP</option>
+            <option>PINBANK</option>
+            <option>OUTROS</option>
+          </select>
+        </div>
+        <div id="wrap_outros" style="display:none">
+          <div class="label">Qual?</div>
+          <input id="meio_captura_outros" type="text" placeholder="Digite o nome do meio de captura">
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:12px;display:none" id="wrap_ec">
+        <div id="wrap_ec_cielo" style="display:none">
+          <div class="label">EC Cielo</div>
+          <input id="ec_cielo" type="text" placeholder="Código EC da Cielo">
+        </div>
+        <div id="wrap_ec_rede" style="display:none">
+          <div class="label">EC Rede</div>
+          <input id="ec_rede" type="text" placeholder="Código EC da Rede">
+        </div>
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="label" style="font-weight:800">4) Contatos do estabelecimento</div>
+      <div class="small">Você pode cadastrar vários (Dono/Financeiro/TI/Frente de caixa/etc).</div>
+      <div style="height:8px"></div>
+
+      <div class="card" style="background:rgba(255,255,255,.03)">
+        <div class="grid2">
+          <div>
+            <div class="label">Tipo do contato</div>
+            <select id="c_tipo">
+              <option>Comercial (Dono)</option>
+              <option>Financeiro</option>
+              <option>Gerente / Frente de Caixa</option>
+              <option>TI</option>
+              <option>Administrativo</option>
+              <option>Teste Ativação (Cartão teste)</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div>
+            <div class="label">Nome</div>
+            <input id="c_nome" type="text" placeholder="Ex: Maria">
+          </div>
+        </div>
+
+        <div class="grid2" style="margin-top:10px">
+          <div>
+            <div class="label">Telefone</div>
+            <input id="c_tel" type="text" placeholder="Ex: 19 99999-9999">
+          </div>
+          <div>
+            <div class="label">E-mail</div>
+            <input id="c_email" type="email" placeholder="Ex: financeiro@empresa.com.br">
+          </div>
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+          <button class="btn" id="btnAddContato" type="button">+ Adicionar contato</button>
+          <button class="btn" id="btnLimparContato" type="button">Limpar</button>
+        </div>
+
+        <div style="height:10px"></div>
+        <div class="small" style="opacity:.9">Contatos cadastrados:</div>
+        <div id="contatosList" class="small" style="margin-top:6px"></div>
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="label" style="font-weight:800">5) Condições comerciais</div>
+      <div style="height:8px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Prazo de pagamento</div>
+          <select id="prazo_pagamento">
+            <option value="">Selecione…</option>
+            <option>Padrão Vegas</option>
+            <option>7+28</option>
+            <option>7+21</option>
+            <option>7+14</option>
+            <option>7+7</option>
+            <option>7+3</option>
+            <option>OUTROS</option>
+          </select>
+        </div>
+        <div id="wrap_prazo_outros" style="display:none">
+          <div class="label">Qual?</div>
+          <input id="prazo_pagamento_outros" type="text" placeholder="Digite o prazo combinado">
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:12px">
+        <div>
+          <div class="label">Custo de locação (R$)</div>
+          <input id="custo_locacao" type="text" inputmode="decimal" placeholder="Ex: 89,90">
+          <div class="small">Dica: pode digitar com vírgula, eu converto por baixo 😉</div>
+        </div>
+        <div>
+          <div class="label">Taxa de fidelidade</div>
+          <input id="taxa_fidelidade" type="text" inputmode="decimal" placeholder="Ex: 0,00">
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:12px">
+        <div>
+          <div class="label">Taxa de antecipação</div>
+          <input id="taxa_antecipacao" type="text" inputmode="decimal" placeholder="Ex: 1,99">
+        </div>
+        <div></div>
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="label" style="font-weight:800">6) Teste de ativação (cartão teste)</div>
+      <div class="small">Quem fica com o cartão teste e atende quando a gente ligar pra fazer venda teste.</div>
+      <div style="height:8px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Nome</div>
+          <input id="teste_nome" type="text" placeholder="Ex: João">
+        </div>
+        <div>
+          <div class="label">Telefone</div>
+          <input id="teste_telefone" type="text" placeholder="Ex: 19 99999-9999">
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="label">E-mail</div>
+        <input id="teste_email" type="email" placeholder="Ex: gerente@empresa.com.br">
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="label">Observações gerais</div>
+      <textarea id="observacoes" rows="4" placeholder="Anotações importantes pra Adm Comercial não te xingar depois 😅"></textarea>
+
+      <div style="height:16px"></div>
+
+      <div class="grid2">
+        <button class="btn" id="btnSalvar">Salvar rascunho</button>
+        <button class="btn btnGreen" id="btnEnviar">Enviar para Adm Comercial</button>
+      </div>
+
+      <div class="small" id="last" style="margin-top:10px;opacity:.8"></div>
     </div>
   </div>
 
-  <div class="card" style="margin-top:12px">
-    <div class="grid2" style="align-items:center">
-      <div>
-        <div class="label">Status</div>
-        <div id="statusPill" class="pill">rascunho</div>
-        <div class="small" id="meta"></div>
-      </div>
-      <div style="text-align:right">
-        <a class="btn" href="dashboard.html">← Voltar</a>
-      </div>
-    </div>
+  <div class="toast" id="toast"></div>
 
-    <div style="height:12px"></div>
+  <script type="module">
+    import { sb } from "./assets/supabaseClient.js";
+    import { ensureProfile, logout, toast } from "./assets/app.js";
 
-    <h3 style="margin:0 0 8px 0">1) Dados Cadastrais</h3>
-    <div class="grid2">
-      <div>
-        <div class="label">Razão Social *</div>
-        <input id="razao_social" type="text" placeholder="Ex: Vegas Card Cartões de Crédito do Brasil LTDA">
-      </div>
-      <div>
-        <div class="label">Nome Fantasia *</div>
-        <input id="nome_fantasia" type="text" placeholder="Ex: Restaurante do Zé">
-      </div>
-    </div>
+    const el=(id)=>document.getElementById(id);
 
-    <div style="height:10px"></div>
+    const ctx = await ensureProfile();
+    if(!ctx) throw new Error("no session");
+    const { user, prof } = ctx;
 
-    <div class="grid2">
-      <div>
-        <div class="label">CNPJ *</div>
-        <input id="cnpj" type="text" placeholder="00.000.000/0000-00">
-      </div>
-      <div>
-        <div class="label">I.E</div>
-        <input id="ie" type="text" placeholder="(opcional)">
-      </div>
-    </div>
+    el("who").textContent = `${prof.nome||""} • ${prof.role}`;
+    el("btnLogout").addEventListener("click",(e)=>{e.preventDefault();logout();});
 
-    <div style="height:10px"></div>
+    // edição por query ?id=...
+    const params = new URLSearchParams(location.search);
+    const fichaId = params.get("id");
 
-    <div class="grid2">
-      <div>
-        <div class="label">Endereço *</div>
-        <input id="endereco" type="text" placeholder="Rua / Av...">
-      </div>
-      <div>
-        <div class="label">Número *</div>
-        <input id="numero" type="text" placeholder="123">
-      </div>
-    </div>
+    // contatos (array em memória -> salva em jsonb)
+    let contatos = [];
 
-    <div style="height:10px"></div>
+    // helpers
+    const moneyToNumber = (v)=>{
+      if(v===null||v===undefined) return null;
+      const s = String(v).trim();
+      if(!s) return null;
+      // aceita "1.234,56" ou "1234,56" ou "1234.56"
+      const normalized = s.replace(/\./g,'').replace(',', '.');
+      const n = Number(normalized);
+      return Number.isFinite(n) ? n : null;
+    };
 
-    <div class="grid2">
-      <div>
-        <div class="label">Complemento</div>
-        <input id="complemento" type="text" placeholder="Sala, Loja, Apto...">
-      </div>
-      <div>
-        <div class="label">Bairro *</div>
-        <input id="bairro" type="text" placeholder="Centro">
-      </div>
-    </div>
+    function renderContatos(){
+      if(!contatos.length){
+        el("contatosList").innerHTML = "<i>Nenhum contato adicionado.</i>";
+        return;
+      }
+      el("contatosList").innerHTML = contatos.map((c,idx)=>`
+        <div style="display:flex;justify-content:space-between;gap:10px;margin:6px 0">
+          <div>
+            <b>${c.tipo}</b> — ${c.nome||"—"} | ${c.telefone||"—"} | ${c.email||"—"}
+          </div>
+          <a href="#" data-del="${idx}" style="opacity:.9">remover</a>
+        </div>
+      `).join("");
 
-    <div style="height:10px"></div>
-
-    <div class="grid2">
-      <div>
-        <div class="label">Cidade *</div>
-        <input id="cidade" type="text" placeholder="Americana">
-      </div>
-      <div>
-        <div class="label">UF *</div>
-        <select id="uf">
-          <option value="">Selecione</option>
-          <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option>
-          <option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option>
-          <option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option>
-          <option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option>
-          <option>SP</option><option>SE</option><option>TO</option>
-        </select>
-      </div>
-    </div>
-
-    <div style="height:10px"></div>
-
-    <div class="grid2">
-      <div>
-        <div class="label">CEP *</div>
-        <input id="cep" type="text" placeholder="00000-000">
-      </div>
-      <div>
-        <div class="label">Telefone / WhatsApp *</div>
-        <input id="telefone_whatsapp" type="text" placeholder="(DDD) 99999-9999">
-      </div>
-    </div>
-
-    <div style="height:10px"></div>
-
-    <div class="grid2">
-      <div>
-        <div class="label">E-mail *</div>
-        <input id="email" type="email" placeholder="email@empresa.com.br">
-      </div>
-      <div>
-        <div class="label">Contato *</div>
-        <input id="contato_nome" type="text" placeholder="Nome do contato">
-      </div>
-    </div>
-
-    <div style="height:16px"></div>
-
-    <h3 style="margin:0 0 8px 0">2) Banco</h3>
-    <div class="grid2">
-      <div>
-        <div class="label">Código / Nome do Banco *</div>
-        <input id="banco" type="text" placeholder="Ex: 341 - Itaú">
-      </div>
-      <div>
-        <div class="label">Agência *</div>
-        <input id="agencia" type="text" placeholder="0000">
-      </div>
-    </div>
-
-    <div style="height:10px"></div>
-
-    <div class="grid2">
-      <div>
-        <div class="label">Conta Corrente *</div>
-        <input id="conta_corrente" type="text" placeholder="00000-0">
-      </div>
-      <div>
-        <div class="label">Favorecido *</div>
-        <input id="favorecido" type="text" placeholder="Nome do favorecido">
-      </div>
-    </div>
-
-    <div style="height:10px"></div>
-
-    <div>
-      <div class="label">CPF/CNPJ do Favorecido *</div>
-      <input id="favorecido_doc" type="text" placeholder="CPF ou CNPJ">
-    </div>
-
-    <div style="height:16px"></div>
-
-    <h3 style="margin:0 0 8px 0">3) Condições</h3>
-    <div>
-      <div class="label">Meios de captura / custo de locação *</div>
-      <textarea id="meios_captura" rows="3" placeholder="Ex: STONE; CIELO EC; POS WEB; ..."></textarea>
-      <div class="small">Dica: separa por “;” pra ficar bonitinho depois.</div>
-    </div>
-
-    <div style="height:10px"></div>
-
-    <div class="grid2">
-      <div>
-        <div class="label">Custo de locação</div>
-        <input id="custo_locacao" type="text" placeholder="Ex: R$ 79/mês">
-      </div>
-      <div></div>
-    </div>
-
-    <div style="height:10px"></div>
-
-    <div class="grid2">
-      <div>
-        <div class="label">Taxa de Administração</div>
-        <input id="taxa_adm" type="number" step="0.01" placeholder="Ex: 2.50">
-        <div class="small">Use <b>ponto</b> (2.50). Depois a gente mascara pra vírgula.</div>
-      </div>
-      <div>
-        <div class="label">Taxa de Publicidade</div>
-        <input id="taxa_publicidade" type="number" step="0.01" placeholder="Ex: 0.50">
-      </div>
-    </div>
-
-    <div style="height:10px"></div>
-
-    <div class="grid2">
-      <div>
-        <div class="label">Taxa de Fidelidade</div>
-        <input id="taxa_fidelidade" type="number" step="0.01" placeholder="Ex: 1.00">
-      </div>
-      <div></div>
-    </div>
-
-    <div style="height:16px"></div>
-
-    <h3 style="margin:0 0 8px 0">4) Representante Legal</h3>
-    <div class="grid2">
-      <div>
-        <div class="label">Nome *</div>
-        <input id="rep_nome" type="text" placeholder="Nome completo">
-      </div>
-      <div>
-        <div class="label">Data de Nascimento *</div>
-        <input id="rep_nascimento" type="date">
-      </div>
-    </div>
-
-    <div style="height:10px"></div>
-
-    <div class="grid2">
-      <div>
-        <div class="label">CPF *</div>
-        <input id="rep_cpf" type="text" placeholder="000.000.000-00">
-      </div>
-      <div>
-        <div class="label">Prazo de Pagamento *</div>
-        <input id="prazo_pagamento" type="text" placeholder="Ex: de 1 a 30/31, paga dia 25 do mês seguinte">
-      </div>
-    </div>
-
-    <div style="height:10px"></div>
-
-    <div>
-      <div class="label">Observações *</div>
-      <textarea id="observacoes" rows="4" placeholder="Observações gerais do credenciamento…"></textarea>
-    </div>
-
-    <div style="height:16px"></div>
-
-    <h3 style="margin:0 0 8px 0">Assinaturas (opcional)</h3>
-    <div class="small" style="margin-bottom:8px">
-      Se for credenciamento presencial no tablet, assina aqui. Se for remoto, pode enviar sem assinatura e coletar depois.
-    </div>
-
-    <div class="grid2">
-      <div class="card" style="margin:0">
-        <div class="label">Assinatura do Cliente</div>
-        <input id="ass_cliente_nome" type="text" placeholder="Nome (cliente)">
-        <div style="height:8px"></div>
-        <canvas id="cCliente" width="520" height="160" style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.15)"></canvas>
-        <div style="height:8px"></div>
-        <button class="btn" id="limparCliente">Limpar</button>
-      </div>
-
-      <div class="card" style="margin:0">
-        <div class="label">Assinatura do Vendedor</div>
-        <input id="ass_vendedor_nome" type="text" placeholder="Nome (vendedor)" />
-        <div style="height:8px"></div>
-        <canvas id="cVend" width="520" height="160" style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.15)"></canvas>
-        <div style="height:8px"></div>
-        <button class="btn" id="limparVend">Limpar</button>
-      </div>
-    </div>
-
-    <div style="height:16px"></div>
-
-    <div class="grid2">
-      <button class="btn" id="btnSalvar">Salvar rascunho</button>
-      <button class="btn btnGreen" id="btnEnviar">Enviar para Adm Comercial</button>
-    </div>
-
-    <div class="small" id="last" style="margin-top:10px;opacity:.8"></div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script type="module">
-import { sb } from "./assets/supabaseClient.js";
-import { ensureProfile, logout, toast } from "./assets/app.js";
-
-const el = (id)=>document.getElementById(id);
-
-const ctx = await ensureProfile();
-if(!ctx) throw new Error("no session");
-const { user, prof } = ctx;
-
-el("who").textContent = `${prof.nome || ""} • ${prof.role}`;
-el("btnLogout").addEventListener("click",(e)=>{ e.preventDefault(); logout(); });
-
-const params = new URLSearchParams(location.search);
-let fichaId = params.get("id") || null;
-
-function pill(text){
-  el("statusPill").textContent = text;
-}
-
-function setupCanvas(canvasId, btnClearId){
-  const c = el(canvasId);
-  const ctx2 = c.getContext("2d");
-  let drawing = false;
-
-  function pos(e){
-    const r = c.getBoundingClientRect();
-    const x = (e.touches?e.touches[0].clientX:e.clientX) - r.left;
-    const y = (e.touches?e.touches[0].clientY:e.clientY) - r.top;
-    return { x: x*(c.width/r.width), y: y*(c.height/r.height) };
-  }
-
-  function start(e){ drawing=true; const p=pos(e); ctx2.beginPath(); ctx2.moveTo(p.x,p.y); e.preventDefault(); }
-  function move(e){ if(!drawing) return; const p=pos(e); ctx2.lineTo(p.x,p.y); ctx2.lineWidth=2.2; ctx2.lineCap="round"; ctx2.strokeStyle="rgba(255,255,255,.9)"; ctx2.stroke(); e.preventDefault(); }
-  function end(){ drawing=false; }
-
-  c.addEventListener("mousedown", start);
-  c.addEventListener("mousemove", move);
-  window.addEventListener("mouseup", end);
-
-  c.addEventListener("touchstart", start, {passive:false});
-  c.addEventListener("touchmove", move, {passive:false});
-  c.addEventListener("touchend", end);
-
-  el(btnClearId).addEventListener("click", ()=>{
-    ctx2.clearRect(0,0,c.width,c.height);
-  });
-
-  return {
-    toDataURL: ()=> c.toDataURL("image/png"),
-    isBlank: ()=>{
-      const img = ctx2.getImageData(0,0,c.width,c.height).data;
-      for(let i=3;i<img.length;i+=4) if(img[i]!==0) return false;
-      return true;
+      [...el("contatosList").querySelectorAll("[data-del]")].forEach(a=>{
+        a.addEventListener("click",(e)=>{
+          e.preventDefault();
+          const i = Number(a.getAttribute("data-del"));
+          contatos.splice(i,1);
+          renderContatos();
+        });
+      });
     }
-  };
-}
 
-const sigCliente = setupCanvas("cCliente","limparCliente");
-const sigVend = setupCanvas("cVend","limparVend");
+    el("btnAddContato").addEventListener("click", ()=>{
+      const tipo = el("c_tipo").value;
+      const nome = el("c_nome").value.trim();
+      const telefone = el("c_tel").value.trim();
+      const email = el("c_email").value.trim();
 
-function readPayload(){
-  const payload = {
-    user_id: user.id,
+      if(!nome && !telefone && !email){
+        toast("Coloca pelo menos um dado do contato 😅");
+        return;
+      }
+      contatos.push({ tipo, nome, telefone, email });
+      el("c_nome").value = "";
+      el("c_tel").value = "";
+      el("c_email").value = "";
+      renderContatos();
+      toast("Contato adicionado ✅");
+    });
 
-    razao_social: el("razao_social").value || null,
-    nome_fantasia: el("nome_fantasia").value || null,
-    cnpj: el("cnpj").value || null,
-    ie: el("ie").value || null,
+    el("btnLimparContato").addEventListener("click", ()=>{
+      el("c_nome").value = "";
+      el("c_tel").value = "";
+      el("c_email").value = "";
+      toast("Campos limpos.");
+    });
 
-    endereco: el("endereco").value || null,
-    numero: el("numero").value || null,
-    complemento: el("complemento").value || null,
-    bairro: el("bairro").value || null,
-    cidade: el("cidade").value || null,
-    uf: el("uf").value || null,
-    cep: el("cep").value || null,
+    // meio captura: OUTROS + EC Cielo/Rede
+    function updateMeioCapturaUI(){
+      const v = (el("meio_captura").value||"").toUpperCase();
+      el("wrap_outros").style.display = (v==="OUTROS") ? "block" : "none";
 
-    telefone_whatsapp: el("telefone_whatsapp").value || null,
-    email: el("email").value || null,
-    contato_nome: el("contato_nome").value || null,
+      const isCielo = v==="CIELO";
+      const isRede = v==="REDE";
+      const showEC = isCielo || isRede;
 
-    banco: el("banco").value || null,
-    agencia: el("agencia").value || null,
-    conta_corrente: el("conta_corrente").value || null,
-    favorecido: el("favorecido").value || null,
-    favorecido_doc: el("favorecido_doc").value || null,
+      el("wrap_ec").style.display = showEC ? "grid" : "none";
+      el("wrap_ec_cielo").style.display = isCielo ? "block" : "none";
+      el("wrap_ec_rede").style.display = isRede ? "block" : "none";
+      if(!isCielo) el("ec_cielo").value = "";
+      if(!isRede) el("ec_rede").value = "";
+      if(v!=="OUTROS") el("meio_captura_outros").value = "";
+    }
+    el("meio_captura").addEventListener("change", updateMeioCapturaUI);
 
-    meios_captura: el("meios_captura").value || null,
-    custo_locacao: el("custo_locacao").value || null,
+    // prazo pagamento: OUTROS
+    function updatePrazoUI(){
+      const v = (el("prazo_pagamento").value||"").toUpperCase();
+      el("wrap_prazo_outros").style.display = (v==="OUTROS") ? "block" : "none";
+      if(v!=="OUTROS") el("prazo_pagamento_outros").value = "";
+    }
+    el("prazo_pagamento").addEventListener("change", updatePrazoUI);
 
-    taxa_adm: el("taxa_adm").value ? Number(el("taxa_adm").value) : null,
-    taxa_publicidade: el("taxa_publicidade").value ? Number(el("taxa_publicidade").value) : null,
-    taxa_fidelidade: el("taxa_fidelidade").value ? Number(el("taxa_fidelidade").value) : null,
+    async function load(){
+      if(!fichaId){
+        renderContatos();
+        updateMeioCapturaUI();
+        updatePrazoUI();
+        el("last").textContent = "Nova ficha (rascunho).";
+        return;
+      }
 
-    rep_nome: el("rep_nome").value || null,
-    rep_nascimento: el("rep_nascimento").value || null,
-    rep_cpf: el("rep_cpf").value || null,
+      const { data, error } = await sb
+        .from("fichas_credenciamento")
+        .select("*")
+        .eq("id", fichaId)
+        .single();
 
-    prazo_pagamento: el("prazo_pagamento").value || null,
-    observacoes: el("observacoes").value || null,
+      if(error){
+        toast("Erro ao carregar: " + error.message);
+        return;
+      }
 
-    ass_cliente_nome: el("ass_cliente_nome").value || null,
-    ass_vendedor_nome: el("ass_vendedor_nome").value || null
-  };
+      // preenche
+      el("empresa").value = data.empresa || "vegas";
+      el("razao_social").value = data.razao_social || "";
+      el("nome_fantasia").value = data.nome_fantasia || "";
+      el("cnpj").value = data.cnpj || "";
+      el("inscr_estadual").value = data.inscr_estadual || "";
+      el("ramo_atividade").value = data.ramo_atividade || "";
 
-  const hasCliente = !sigCliente.isBlank();
-  const hasVend = !sigVend.isBlank();
+      el("endereco").value = data.endereco || "";
+      el("numero").value = data.numero || "";
+      el("complemento").value = data.complemento || "";
+      el("bairro").value = data.bairro || "";
+      el("cidade").value = data.cidade || "";
+      el("uf").value = data.uf || "";
+      el("cep").value = data.cep || "";
 
-  if(hasCliente) payload.ass_cliente_dataurl = sigCliente.toDataURL();
-  if(hasVend) payload.ass_vendedor_dataurl = sigVend.toDataURL();
+      el("meio_captura").value = data.meio_captura || "";
+      el("meio_captura_outros").value = data.meio_captura_outros || "";
+      el("ec_cielo").value = data.ec_cielo || "";
+      el("ec_rede").value = data.ec_rede || "";
 
-  if(hasCliente || hasVend){
-    payload.assinado_em = new Date().toISOString();
-  }
+      el("prazo_pagamento").value = data.prazo_pagamento || "";
+      el("prazo_pagamento_outros").value = data.prazo_pagamento_outros || "";
+      el("custo_locacao").value = (data.custo_locacao ?? "") === null ? "" : String(data.custo_locacao).replace('.',',');
+      el("taxa_fidelidade").value = (data.taxa_fidelidade ?? "") === null ? "" : String(data.taxa_fidelidade).replace('.',',');
+      el("taxa_antecipacao").value = (data.taxa_antecipacao ?? "") === null ? "" : String(data.taxa_antecipacao).replace('.',',');
 
-  return payload;
-}
+      el("teste_nome").value = data.teste_nome || "";
+      el("teste_telefone").value = data.teste_telefone || "";
+      el("teste_email").value = data.teste_email || "";
+      el("observacoes").value = data.observacoes || "";
 
-async function log(evento, mensagem, payload=null){
-  if(!fichaId) return;
-  await sb.from("cred_fichas_logs").insert({
-    ficha_id: fichaId,
-    actor_id: user.id,
-    actor_role: prof.role,
-    evento,
-    mensagem,
-    payload
-  });
-}
+      contatos = Array.isArray(data.contatos) ? data.contatos : [];
+      renderContatos();
+      updateMeioCapturaUI();
+      updatePrazoUI();
 
-async function load(){
-  if(!fichaId){
-    pill("rascunho");
-    el("meta").textContent = "Nova ficha (ainda não salva).";
-    return;
-  }
+      el("last").textContent = `Status: ${data.status} • Atualizado: ${data.updated_at ? new Date(data.updated_at).toLocaleString("pt-BR") : "—"}`;
+    }
 
-  const { data, error } = await sb.from("cred_fichas").select("*").eq("id", fichaId).single();
-  if(error){ toast("Erro ao carregar: " + error.message); return; }
+    function getPayload(statusOverride=null){
+      const meio = el("meio_captura").value || null;
+      const prazo = el("prazo_pagamento").value || null;
 
-  pill(data.status || "rascunho");
-  el("meta").textContent = `ID: ${data.id} • Atualizado: ${data.updated_at ? new Date(data.updated_at).toLocaleString("pt-BR") : "—"}`;
+      return {
+        empresa: el("empresa").value,
+        razao_social: el("razao_social").value || null,
+        nome_fantasia: el("nome_fantasia").value || null,
+        cnpj: el("cnpj").value || null,
+        inscr_estadual: el("inscr_estadual").value || null,
+        ramo_atividade: el("ramo_atividade").value || null,
 
-  const fields = [
-    "razao_social","nome_fantasia","cnpj","ie","endereco","numero","complemento","bairro","cidade","uf","cep",
-    "telefone_whatsapp","email","contato_nome","banco","agencia","conta_corrente","favorecido","favorecido_doc",
-    "meios_captura","custo_locacao","rep_nome","rep_nascimento","rep_cpf","prazo_pagamento","observacoes","ass_cliente_nome","ass_vendedor_nome"
-  ];
-  fields.forEach(k=>{
-    if(el(k)) el(k).value = data[k] ?? "";
-  });
+        endereco: el("endereco").value || null,
+        numero: el("numero").value || null,
+        complemento: el("complemento").value || null,
+        bairro: el("bairro").value || null,
+        cidade: el("cidade").value || null,
+        uf: el("uf").value || null,
+        cep: el("cep").value || null,
 
-  if(el("taxa_adm")) el("taxa_adm").value = data.taxa_adm ?? "";
-  if(el("taxa_publicidade")) el("taxa_publicidade").value = data.taxa_publicidade ?? "";
-  if(el("taxa_fidelidade")) el("taxa_fidelidade").value = data.taxa_fidelidade ?? "";
+        contatos: contatos,
 
-  el("last").textContent = `Status atual: ${data.status || "—"}`;
-}
+        meio_captura: meio,
+        meio_captura_outros: (meio && meio.toUpperCase()==="OUTROS") ? (el("meio_captura_outros").value || null) : null,
+        ec_cielo: (meio && meio.toUpperCase()==="CIELO") ? (el("ec_cielo").value || null) : null,
+        ec_rede: (meio && meio.toUpperCase()==="REDE") ? (el("ec_rede").value || null) : null,
 
-async function save(onlySave=true){
-  el("btnSalvar").disabled = true;
-  el("btnEnviar").disabled = true;
+        prazo_pagamento: prazo,
+        prazo_pagamento_outros: (prazo && prazo.toUpperCase()==="OUTROS") ? (el("prazo_pagamento_outros").value || null) : null,
 
-  const payload = readPayload();
+        custo_locacao: moneyToNumber(el("custo_locacao").value),
+        taxa_fidelidade: moneyToNumber(el("taxa_fidelidade").value),
+        taxa_antecipacao: moneyToNumber(el("taxa_antecipacao").value),
 
-  // validação mínima
-  const required = ["razao_social","nome_fantasia","cnpj","endereco","numero","bairro","cidade","uf","cep","telefone_whatsapp","email","contato_nome","banco","agencia","conta_corrente","favorecido","favorecido_doc","meios_captura","rep_nome","rep_nascimento","rep_cpf","prazo_pagamento","observacoes"];
-  const missing = required.filter(id => !el(id).value?.trim());
-  if(!onlySave && missing.length){
-    toast("Faltando obrigatório: " + missing.slice(0,6).join(", ") + (missing.length>6 ? "…" : ""));
-    el("btnSalvar").disabled = false;
-    el("btnEnviar").disabled = false;
-    return;
-  }
+        teste_nome: el("teste_nome").value || null,
+        teste_telefone: el("teste_telefone").value || null,
+        teste_email: el("teste_email").value || null,
 
-  if(!fichaId){
-    const { data, error } = await sb.from("cred_fichas").insert({
-      ...payload,
-      status: "rascunho"
-    }).select("id").single();
+        observacoes: el("observacoes").value || null,
 
-    if(error){
-      toast("Erro ao criar: " + error.message);
+        updated_at: new Date().toISOString(),
+        ...(statusOverride ? { status: statusOverride } : {})
+      };
+    }
+
+    async function save(statusOverride=null){
+      el("btnSalvar").disabled = true;
+      el("btnEnviar").disabled = true;
+
+      let res;
+      if(!fichaId){
+        res = await sb
+          .from("fichas_credenciamento")
+          .insert([{ ...getPayload(statusOverride), created_by: user.id }])
+          .select("id")
+          .single();
+      } else {
+        res = await sb
+          .from("fichas_credenciamento")
+          .update(getPayload(statusOverride))
+          .eq("id", fichaId)
+          .select("id")
+          .single();
+      }
+
       el("btnSalvar").disabled = false;
       el("btnEnviar").disabled = false;
-      return;
+
+      if(res.error){
+        toast("Erro ao salvar: " + res.error.message);
+        return null;
+      }
+
+      const newId = res.data?.id;
+      toast("✅ Salvo!");
+      if(!fichaId && newId){
+        window.location.href = `ficha.html?id=${newId}`;
+      } else {
+        await load();
+      }
+      return newId || fichaId;
     }
-    fichaId = data.id;
-    history.replaceState({}, "", `ficha.html?id=${fichaId}`);
-    await log("criou","Criou a ficha", payload);
-  } else {
-    const { error } = await sb.from("cred_fichas").update(payload).eq("id", fichaId);
-    if(error){
-      toast("Erro ao salvar: " + error.message);
-      el("btnSalvar").disabled = false;
-      el("btnEnviar").disabled = false;
-      return;
-    }
-    await log("salvou","Salvou alterações", payload);
-  }
 
-  toast("✅ Salvo!");
-  await load();
-  el("btnSalvar").disabled = false;
-  el("btnEnviar").disabled = false;
-}
+    el("btnSalvar").addEventListener("click", async ()=>{ await save(null); });
 
-async function enviar(){
-  await save(false);
+    el("btnEnviar").addEventListener("click", async ()=>{
+      // validações mínimas
+      if(!el("cnpj").value.trim()){
+        toast("Faltou CNPJ 😅");
+        return;
+      }
+      if(!el("cidade").value.trim() || !el("uf").value){
+        toast("Cidade/UF faltando.");
+        return;
+      }
+      const id = await save("enviada");
+      if(id){
+        toast("Enviado para Adm Comercial ✅");
+        window.location.href = "fichas.html";
+      }
+    });
 
-  const { error } = await sb.from("cred_fichas")
-    .update({ status:"enviada" })
-    .eq("id", fichaId);
-
-  if(error){ toast("Erro ao enviar: " + error.message); return; }
-
-  await log("enviou","Enviou para análise (Adm Comercial)");
-  toast("📨 Enviado pra análise!");
-  await load();
-}
-
-el("btnSalvar").addEventListener("click", ()=>save(true));
-el("btnEnviar").addEventListener("click", enviar);
-
-await load();
-</script>
-
+    await load();
+  </script>
 </body>
 </html>
-
