@@ -1,1 +1,519 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Ficha de Credenciamento</title>
+  <link rel="stylesheet" href="assets/app.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>Ficha de Credenciamento</h1>
+    <div class="sub" id="who">Carregando…</div>
+
+    <div class="nav">
+      <a href="dashboard.html">📊</a>
+      <a href="nova.html">➕</a>
+      <a href="negociacoes.html">📋</a>
+      <a href="mapa.html">📍</a>
+      <a href="ficha.html" title="Ficha">📝</a>
+      <a href="#" id="btnLogout">🚪</a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <div class="grid2" style="align-items:center">
+      <div>
+        <div class="label">Status</div>
+        <div id="statusPill" class="pill">rascunho</div>
+        <div class="small" id="meta"></div>
+      </div>
+      <div style="text-align:right">
+        <a class="btn" href="dashboard.html">← Voltar</a>
+      </div>
+    </div>
+
+    <div style="height:12px"></div>
+
+    <h3 style="margin:0 0 8px 0">1) Dados Cadastrais</h3>
+    <div class="grid2">
+      <div>
+        <div class="label">Razão Social *</div>
+        <input id="razao_social" type="text" placeholder="Ex: Vegas Card Cartões de Crédito do Brasil LTDA">
+      </div>
+      <div>
+        <div class="label">Nome Fantasia *</div>
+        <input id="nome_fantasia" type="text" placeholder="Ex: Restaurante do Zé">
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="label">CNPJ *</div>
+        <input id="cnpj" type="text" placeholder="00.000.000/0000-00">
+      </div>
+      <div>
+        <div class="label">I.E</div>
+        <input id="ie" type="text" placeholder="(opcional)">
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="label">Endereço *</div>
+        <input id="endereco" type="text" placeholder="Rua / Av...">
+      </div>
+      <div>
+        <div class="label">Número *</div>
+        <input id="numero" type="text" placeholder="123">
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="label">Complemento</div>
+        <input id="complemento" type="text" placeholder="Sala, Loja, Apto...">
+      </div>
+      <div>
+        <div class="label">Bairro *</div>
+        <input id="bairro" type="text" placeholder="Centro">
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="label">Cidade *</div>
+        <input id="cidade" type="text" placeholder="Americana">
+      </div>
+      <div>
+        <div class="label">UF *</div>
+        <select id="uf">
+          <option value="">Selecione</option>
+          <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option>
+          <option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+          <option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option>
+          <option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+          <option>SP</option><option>SE</option><option>TO</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="label">CEP *</div>
+        <input id="cep" type="text" placeholder="00000-000">
+      </div>
+      <div>
+        <div class="label">Telefone / WhatsApp *</div>
+        <input id="telefone_whatsapp" type="text" placeholder="(DDD) 99999-9999">
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="label">E-mail *</div>
+        <input id="email" type="email" placeholder="email@empresa.com.br">
+      </div>
+      <div>
+        <div class="label">Contato *</div>
+        <input id="contato_nome" type="text" placeholder="Nome do contato">
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <h3 style="margin:0 0 8px 0">2) Banco</h3>
+    <div class="grid2">
+      <div>
+        <div class="label">Código / Nome do Banco *</div>
+        <input id="banco" type="text" placeholder="Ex: 341 - Itaú">
+      </div>
+      <div>
+        <div class="label">Agência *</div>
+        <input id="agencia" type="text" placeholder="0000">
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="label">Conta Corrente *</div>
+        <input id="conta_corrente" type="text" placeholder="00000-0">
+      </div>
+      <div>
+        <div class="label">Favorecido *</div>
+        <input id="favorecido" type="text" placeholder="Nome do favorecido">
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div>
+      <div class="label">CPF/CNPJ do Favorecido *</div>
+      <input id="favorecido_doc" type="text" placeholder="CPF ou CNPJ">
+    </div>
+
+    <div style="height:16px"></div>
+
+    <h3 style="margin:0 0 8px 0">3) Condições</h3>
+    <div>
+      <div class="label">Meios de captura / custo de locação *</div>
+      <textarea id="meios_captura" rows="3" placeholder="Ex: STONE; CIELO EC; POS WEB; ..."></textarea>
+      <div class="small">Dica: separa por “;” pra ficar bonitinho depois.</div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="label">Custo de locação</div>
+        <input id="custo_locacao" type="text" placeholder="Ex: R$ 79/mês">
+      </div>
+      <div></div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="label">Taxa de Administração</div>
+        <input id="taxa_adm" type="number" step="0.01" placeholder="Ex: 2.50">
+        <div class="small">Use <b>ponto</b> (2.50). Depois a gente mascara pra vírgula.</div>
+      </div>
+      <div>
+        <div class="label">Taxa de Publicidade</div>
+        <input id="taxa_publicidade" type="number" step="0.01" placeholder="Ex: 0.50">
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="label">Taxa de Fidelidade</div>
+        <input id="taxa_fidelidade" type="number" step="0.01" placeholder="Ex: 1.00">
+      </div>
+      <div></div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <h3 style="margin:0 0 8px 0">4) Representante Legal</h3>
+    <div class="grid2">
+      <div>
+        <div class="label">Nome *</div>
+        <input id="rep_nome" type="text" placeholder="Nome completo">
+      </div>
+      <div>
+        <div class="label">Data de Nascimento *</div>
+        <input id="rep_nascimento" type="date">
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="label">CPF *</div>
+        <input id="rep_cpf" type="text" placeholder="000.000.000-00">
+      </div>
+      <div>
+        <div class="label">Prazo de Pagamento *</div>
+        <input id="prazo_pagamento" type="text" placeholder="Ex: de 1 a 30/31, paga dia 25 do mês seguinte">
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div>
+      <div class="label">Observações *</div>
+      <textarea id="observacoes" rows="4" placeholder="Observações gerais do credenciamento…"></textarea>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <h3 style="margin:0 0 8px 0">Assinaturas (opcional)</h3>
+    <div class="small" style="margin-bottom:8px">
+      Se for credenciamento presencial no tablet, assina aqui. Se for remoto, pode enviar sem assinatura e coletar depois.
+    </div>
+
+    <div class="grid2">
+      <div class="card" style="margin:0">
+        <div class="label">Assinatura do Cliente</div>
+        <input id="ass_cliente_nome" type="text" placeholder="Nome (cliente)">
+        <div style="height:8px"></div>
+        <canvas id="cCliente" width="520" height="160" style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.15)"></canvas>
+        <div style="height:8px"></div>
+        <button class="btn" id="limparCliente">Limpar</button>
+      </div>
+
+      <div class="card" style="margin:0">
+        <div class="label">Assinatura do Vendedor</div>
+        <input id="ass_vendedor_nome" type="text" placeholder="Nome (vendedor)" />
+        <div style="height:8px"></div>
+        <canvas id="cVend" width="520" height="160" style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.15)"></canvas>
+        <div style="height:8px"></div>
+        <button class="btn" id="limparVend">Limpar</button>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <div class="grid2">
+      <button class="btn" id="btnSalvar">Salvar rascunho</button>
+      <button class="btn btnGreen" id="btnEnviar">Enviar para Adm Comercial</button>
+    </div>
+
+    <div class="small" id="last" style="margin-top:10px;opacity:.8"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { sb } from "./assets/supabaseClient.js";
+import { ensureProfile, logout, toast } from "./assets/app.js";
+
+const el = (id)=>document.getElementById(id);
+
+const ctx = await ensureProfile();
+if(!ctx) throw new Error("no session");
+const { user, prof } = ctx;
+
+el("who").textContent = `${prof.nome || ""} • ${prof.role}`;
+el("btnLogout").addEventListener("click",(e)=>{ e.preventDefault(); logout(); });
+
+const params = new URLSearchParams(location.search);
+let fichaId = params.get("id") || null;
+
+function pill(text){
+  el("statusPill").textContent = text;
+}
+
+function setupCanvas(canvasId, btnClearId){
+  const c = el(canvasId);
+  const ctx2 = c.getContext("2d");
+  let drawing = false;
+
+  function pos(e){
+    const r = c.getBoundingClientRect();
+    const x = (e.touches?e.touches[0].clientX:e.clientX) - r.left;
+    const y = (e.touches?e.touches[0].clientY:e.clientY) - r.top;
+    return { x: x*(c.width/r.width), y: y*(c.height/r.height) };
+  }
+
+  function start(e){ drawing=true; const p=pos(e); ctx2.beginPath(); ctx2.moveTo(p.x,p.y); e.preventDefault(); }
+  function move(e){ if(!drawing) return; const p=pos(e); ctx2.lineTo(p.x,p.y); ctx2.lineWidth=2.2; ctx2.lineCap="round"; ctx2.strokeStyle="rgba(255,255,255,.9)"; ctx2.stroke(); e.preventDefault(); }
+  function end(){ drawing=false; }
+
+  c.addEventListener("mousedown", start);
+  c.addEventListener("mousemove", move);
+  window.addEventListener("mouseup", end);
+
+  c.addEventListener("touchstart", start, {passive:false});
+  c.addEventListener("touchmove", move, {passive:false});
+  c.addEventListener("touchend", end);
+
+  el(btnClearId).addEventListener("click", ()=>{
+    ctx2.clearRect(0,0,c.width,c.height);
+  });
+
+  return {
+    toDataURL: ()=> c.toDataURL("image/png"),
+    isBlank: ()=>{
+      const img = ctx2.getImageData(0,0,c.width,c.height).data;
+      for(let i=3;i<img.length;i+=4) if(img[i]!==0) return false;
+      return true;
+    }
+  };
+}
+
+const sigCliente = setupCanvas("cCliente","limparCliente");
+const sigVend = setupCanvas("cVend","limparVend");
+
+function readPayload(){
+  const payload = {
+    user_id: user.id,
+
+    razao_social: el("razao_social").value || null,
+    nome_fantasia: el("nome_fantasia").value || null,
+    cnpj: el("cnpj").value || null,
+    ie: el("ie").value || null,
+
+    endereco: el("endereco").value || null,
+    numero: el("numero").value || null,
+    complemento: el("complemento").value || null,
+    bairro: el("bairro").value || null,
+    cidade: el("cidade").value || null,
+    uf: el("uf").value || null,
+    cep: el("cep").value || null,
+
+    telefone_whatsapp: el("telefone_whatsapp").value || null,
+    email: el("email").value || null,
+    contato_nome: el("contato_nome").value || null,
+
+    banco: el("banco").value || null,
+    agencia: el("agencia").value || null,
+    conta_corrente: el("conta_corrente").value || null,
+    favorecido: el("favorecido").value || null,
+    favorecido_doc: el("favorecido_doc").value || null,
+
+    meios_captura: el("meios_captura").value || null,
+    custo_locacao: el("custo_locacao").value || null,
+
+    taxa_adm: el("taxa_adm").value ? Number(el("taxa_adm").value) : null,
+    taxa_publicidade: el("taxa_publicidade").value ? Number(el("taxa_publicidade").value) : null,
+    taxa_fidelidade: el("taxa_fidelidade").value ? Number(el("taxa_fidelidade").value) : null,
+
+    rep_nome: el("rep_nome").value || null,
+    rep_nascimento: el("rep_nascimento").value || null,
+    rep_cpf: el("rep_cpf").value || null,
+
+    prazo_pagamento: el("prazo_pagamento").value || null,
+    observacoes: el("observacoes").value || null,
+
+    ass_cliente_nome: el("ass_cliente_nome").value || null,
+    ass_vendedor_nome: el("ass_vendedor_nome").value || null
+  };
+
+  const hasCliente = !sigCliente.isBlank();
+  const hasVend = !sigVend.isBlank();
+
+  if(hasCliente) payload.ass_cliente_dataurl = sigCliente.toDataURL();
+  if(hasVend) payload.ass_vendedor_dataurl = sigVend.toDataURL();
+
+  if(hasCliente || hasVend){
+    payload.assinado_em = new Date().toISOString();
+  }
+
+  return payload;
+}
+
+async function log(evento, mensagem, payload=null){
+  if(!fichaId) return;
+  await sb.from("cred_fichas_logs").insert({
+    ficha_id: fichaId,
+    actor_id: user.id,
+    actor_role: prof.role,
+    evento,
+    mensagem,
+    payload
+  });
+}
+
+async function load(){
+  if(!fichaId){
+    pill("rascunho");
+    el("meta").textContent = "Nova ficha (ainda não salva).";
+    return;
+  }
+
+  const { data, error } = await sb.from("cred_fichas").select("*").eq("id", fichaId).single();
+  if(error){ toast("Erro ao carregar: " + error.message); return; }
+
+  pill(data.status || "rascunho");
+  el("meta").textContent = `ID: ${data.id} • Atualizado: ${data.updated_at ? new Date(data.updated_at).toLocaleString("pt-BR") : "—"}`;
+
+  const fields = [
+    "razao_social","nome_fantasia","cnpj","ie","endereco","numero","complemento","bairro","cidade","uf","cep",
+    "telefone_whatsapp","email","contato_nome","banco","agencia","conta_corrente","favorecido","favorecido_doc",
+    "meios_captura","custo_locacao","rep_nome","rep_nascimento","rep_cpf","prazo_pagamento","observacoes","ass_cliente_nome","ass_vendedor_nome"
+  ];
+  fields.forEach(k=>{
+    if(el(k)) el(k).value = data[k] ?? "";
+  });
+
+  if(el("taxa_adm")) el("taxa_adm").value = data.taxa_adm ?? "";
+  if(el("taxa_publicidade")) el("taxa_publicidade").value = data.taxa_publicidade ?? "";
+  if(el("taxa_fidelidade")) el("taxa_fidelidade").value = data.taxa_fidelidade ?? "";
+
+  el("last").textContent = `Status atual: ${data.status || "—"}`;
+}
+
+async function save(onlySave=true){
+  el("btnSalvar").disabled = true;
+  el("btnEnviar").disabled = true;
+
+  const payload = readPayload();
+
+  // validação mínima
+  const required = ["razao_social","nome_fantasia","cnpj","endereco","numero","bairro","cidade","uf","cep","telefone_whatsapp","email","contato_nome","banco","agencia","conta_corrente","favorecido","favorecido_doc","meios_captura","rep_nome","rep_nascimento","rep_cpf","prazo_pagamento","observacoes"];
+  const missing = required.filter(id => !el(id).value?.trim());
+  if(!onlySave && missing.length){
+    toast("Faltando obrigatório: " + missing.slice(0,6).join(", ") + (missing.length>6 ? "…" : ""));
+    el("btnSalvar").disabled = false;
+    el("btnEnviar").disabled = false;
+    return;
+  }
+
+  if(!fichaId){
+    const { data, error } = await sb.from("cred_fichas").insert({
+      ...payload,
+      status: "rascunho"
+    }).select("id").single();
+
+    if(error){
+      toast("Erro ao criar: " + error.message);
+      el("btnSalvar").disabled = false;
+      el("btnEnviar").disabled = false;
+      return;
+    }
+    fichaId = data.id;
+    history.replaceState({}, "", `ficha.html?id=${fichaId}`);
+    await log("criou","Criou a ficha", payload);
+  } else {
+    const { error } = await sb.from("cred_fichas").update(payload).eq("id", fichaId);
+    if(error){
+      toast("Erro ao salvar: " + error.message);
+      el("btnSalvar").disabled = false;
+      el("btnEnviar").disabled = false;
+      return;
+    }
+    await log("salvou","Salvou alterações", payload);
+  }
+
+  toast("✅ Salvo!");
+  await load();
+  el("btnSalvar").disabled = false;
+  el("btnEnviar").disabled = false;
+}
+
+async function enviar(){
+  await save(false);
+
+  const { error } = await sb.from("cred_fichas")
+    .update({ status:"enviada" })
+    .eq("id", fichaId);
+
+  if(error){ toast("Erro ao enviar: " + error.message); return; }
+
+  await log("enviou","Enviou para análise (Adm Comercial)");
+  toast("📨 Enviado pra análise!");
+  await load();
+}
+
+el("btnSalvar").addEventListener("click", ()=>save(true));
+el("btnEnviar").addEventListener("click", enviar);
+
+await load();
+</script>
+
+</body>
+</html>
 
