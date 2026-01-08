@@ -1,1 +1,130 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Fichas - Adm</title>
+  <link rel="stylesheet" href="assets/app.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>Fichas de Credenciamento</h1>
+    <div class="sub" id="who">Carregando…</div>
+
+    <div class="nav">
+      <a href="dashboard.html">📊</a>
+      <a href="negociacoes.html">📋</a>
+      <a href="ficha.html" title="Nova ficha">📝</a>
+      <a href="#" id="btnLogout">🚪</a>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:12px">
+    <div class="card">
+      <div class="label">Status</div>
+      <select id="fStatus">
+        <option value="">Todos</option>
+        <option value="rascunho">rascunho</option>
+        <option value="enviada">enviada</option>
+        <option value="em_analise">em_analise</option>
+        <option value="pendente">pendente</option>
+        <option value="aprovada">aprovada</option>
+        <option value="lancada">lancada</option>
+        <option value="enviada_email">enviada_email</option>
+        <option value="cancelada">cancelada</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="label">Busca</div>
+      <input id="q" type="text" placeholder="nome fantasia, CNPJ, cidade...">
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Cidade/UF</th>
+          <th>Status</th>
+          <th>Atualizado</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="small" id="empty" style="display:none;margin-top:10px">Nada encontrado.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { sb } from "./assets/supabaseClient.js";
+import { ensureProfile, logout, toast } from "./assets/app.js";
+
+const el = (id)=>document.getElementById(id);
+
+const ctx = await ensureProfile();
+if(!ctx) throw new Error("no session");
+const { user, prof } = ctx;
+
+el("who").textContent = `${prof.nome || ""} • ${prof.role}`;
+el("btnLogout").addEventListener("click",(e)=>{ e.preventDefault(); logout(); });
+
+if(!["adm","gestor"].includes(prof.role)){
+  toast("Acesso restrito (adm/gestor).");
+  setTimeout(()=>location.href="dashboard.html", 900);
+}
+
+function fmtDT(iso){ return iso ? new Date(iso).toLocaleString("pt-BR") : "—"; }
+
+async function query(){
+  let q = sb.from("cred_fichas")
+    .select("id, nome_fantasia, razao_social, cnpj, cidade, uf, status, updated_at")
+    .order("updated_at", { ascending:false });
+
+  const st = el("fStatus").value;
+  if(st) q = q.eq("status", st);
+
+  const term = el("q").value.trim();
+  if(term){
+    // PostgREST OR filter
+    q = q.or(`nome_fantasia.ilike.%${term}%,razao_social.ilike.%${term}%,cnpj.ilike.%${term}%,cidade.ilike.%${term}%`);
+  }
+
+  const { data, error } = await q;
+  if(error){ toast("Erro: " + error.message); return []; }
+  return data || [];
+}
+
+function renderRows(list){
+  el("rows").innerHTML = list.map(r=>`
+    <tr style="cursor:pointer" onclick="window.location.href='ficha_view.html?id=${r.id}'">
+      <td>
+        <b>${(r.nome_fantasia || r.razao_social || "—")}</b>
+        <div class="small">${r.cnpj || ""}</div>
+      </td>
+      <td>${(r.cidade || "—")} / ${(r.uf || "—")}</td>
+      <td><span class="pill">${r.status}</span></td>
+      <td>${fmtDT(r.updated_at)}</td>
+    </tr>
+  `).join("");
+
+  el("empty").style.display = list.length ? "none" : "block";
+}
+
+async function render(){
+  renderRows(await query());
+}
+
+el("fStatus").addEventListener("change", render);
+el("q").addEventListener("input", ()=>{ clearTimeout(window.__t); window.__t=setTimeout(render, 250); });
+
+await render();
+</script>
+</body>
+</html>
 
