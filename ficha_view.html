@@ -3,253 +3,200 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Ficha - Revisão</title>
+  <title>Revisar Ficha</title>
   <link rel="stylesheet" href="assets/app.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 <body>
-<div class="wrap">
-  <div class="top">
-    <h1>Revisão da Ficha</h1>
-    <div class="sub" id="who">Carregando…</div>
+  <div class="wrap">
+    <div class="top">
+      <h1>Revisão da Ficha</h1>
+      <div class="sub" id="who">Carregando…</div>
 
-    <div class="nav">
-      <a href="dashboard.html">📊</a>
-      <a href="fichas_adm.html">🗂️</a>
-      <a href="#" id="btnLogout">🚪</a>
-    </div>
-  </div>
-
-  <div class="card" style="margin-top:12px">
-    <div class="grid2" style="align-items:center">
-      <div>
-        <div class="label">Cliente</div>
-        <div id="titulo" style="font-weight:800;font-size:18px">Carregando…</div>
-        <div class="small" id="sub"></div>
-      </div>
-      <div style="text-align:right">
-        <a class="btn" href="fichas_adm.html">← Voltar</a>
+      <div class="nav">
+        <a href="dashboard.html">📊</a>
+        <a href="fichas.html">🧾</a>
+        <a href="negociacoes.html">📋</a>
+        <a href="#" id="btnLogout">🚪</a>
       </div>
     </div>
 
-    <div style="height:12px"></div>
-
-    <div class="grid2">
-      <div class="card" style="margin:0">
-        <div class="label">Status atual</div>
-        <div id="statusPill" class="pill">—</div>
-        <div class="small" id="meta"></div>
-
-        <div style="height:10px"></div>
-
-        <div class="label">Ação (adm)</div>
-        <select id="acao">
-          <option value="em_analise">Marcar como em análise</option>
-          <option value="pendente">Marcar como pendente</option>
-          <option value="aprovada">Aprovar</option>
-          <option value="lancada">Marcar como lançada</option>
-          <option value="enviada_email">Marcar como e-mail enviado</option>
-          <option value="cancelada">Cancelar</option>
-        </select>
-
-        <div style="height:10px"></div>
-
-        <div class="label">Comentário / motivo</div>
-        <textarea id="msg" rows="3" placeholder="Ex: faltou CEP / agência divergente / ok aprovado..."></textarea>
-
-        <div style="height:12px"></div>
-
-        <button class="btn btnGreen" id="btnAplicar">Aplicar</button>
-      </div>
-
-      <div class="card" style="margin:0">
-        <div class="label">Assinaturas</div>
-        <div class="small" id="assInfo">—</div>
-
-        <div style="height:10px"></div>
-
-        <div class="grid2">
-          <div>
-            <div class="small">Cliente</div>
-            <img id="imgCliente" style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);display:none"/>
-            <div class="small" id="nomeCliente"></div>
-          </div>
-          <div>
-            <div class="small">Vendedor</div>
-            <img id="imgVend" style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);display:none"/>
-            <div class="small" id="nomeVend"></div>
-          </div>
+    <div class="card" style="margin-top:12px">
+      <div class="grid2">
+        <div>
+          <div class="label">Cliente</div>
+          <div id="cliente" style="font-weight:800">Carregando…</div>
+          <div class="small" id="meta"></div>
+        </div>
+        <div style="text-align:right">
+          <a class="btn" href="fichas.html">← Voltar</a>
         </div>
       </div>
-    </div>
 
-    <div style="height:12px"></div>
+      <div style="height:12px"></div>
 
-    <div class="card" style="margin:0">
-      <h3 style="margin:0 0 10px 0">Dados (somente leitura)</h3>
-      <div id="dados" class="small"></div>
-    </div>
+      <div class="grid2">
+        <div class="card" style="background:rgba(255,255,255,.03)">
+          <div class="label">Status</div>
+          <div id="statusTxt" style="font-weight:800">—</div>
+          <div class="small" id="updatedTxt"></div>
+        </div>
+        <div class="card" style="background:rgba(255,255,255,.03)">
+          <div class="label">Observações do revisor (Adm)</div>
+          <textarea id="review_notes" rows="4" placeholder="Ex: faltou CEP / falta EC / falta contato financeiro…"></textarea>
+        </div>
+      </div>
 
-    <div style="height:12px"></div>
+      <div style="height:12px"></div>
 
-    <div class="card" style="margin:0">
-      <h3 style="margin:0 0 10px 0">Histórico (logs)</h3>
-      <div id="logs" class="small"></div>
+      <div class="label" style="font-weight:800">Dados preenchidos</div>
+      <div class="small" id="dump"></div>
+
+      <div style="height:16px"></div>
+
+      <div class="grid2">
+        <button class="btn" id="btnEmAnalise">Marcar: Em análise</button>
+        <button class="btn" id="btnDevolver">Devolver p/ vendedor</button>
+      </div>
+
+      <div class="grid2" style="margin-top:10px">
+        <button class="btn btnGreen" id="btnAprovar">Aprovar</button>
+        <button class="btn" id="btnConcluir">Concluir (cadastrado no Vegas)</button>
+      </div>
+
+      <div style="height:10px"></div>
+      <div class="small" id="last"></div>
     </div>
   </div>
-</div>
 
-<div class="toast" id="toast"></div>
+  <div class="toast" id="toast"></div>
 
-<script type="module">
-import { sb } from "./assets/supabaseClient.js";
-import { ensureProfile, logout, toast } from "./assets/app.js";
+  <script type="module">
+    import { sb } from "./assets/supabaseClient.js";
+    import { ensureProfile, logout, toast } from "./assets/app.js";
+    const el=(id)=>document.getElementById(id);
 
-const el = (id)=>document.getElementById(id);
+    const ctx = await ensureProfile();
+    if(!ctx) throw new Error("no session");
+    const { user, prof } = ctx;
 
-const ctx = await ensureProfile();
-if(!ctx) throw new Error("no session");
-const { user, prof } = ctx;
+    el("who").textContent = `${prof.nome||""} • ${prof.role}`;
+    el("btnLogout").addEventListener("click",(e)=>{e.preventDefault();logout();});
 
-el("who").textContent = `${prof.nome || ""} • ${prof.role}`;
-el("btnLogout").addEventListener("click",(e)=>{ e.preventDefault(); logout(); });
+    // só gestor/adm
+    if(!["gestor","adm"].includes(prof.role)){
+      toast("Sem permissão para revisar.");
+      window.location.href="fichas.html";
+    }
 
-if(!["adm","gestor"].includes(prof.role)){
-  toast("Acesso restrito (adm/gestor).");
-  setTimeout(()=>location.href="dashboard.html", 900);
-}
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id");
+    if(!id){
+      toast("Sem ID na URL.");
+      window.location.href="fichas.html";
+    }
 
-const params = new URLSearchParams(location.search);
-const fichaId = params.get("id");
-if(!fichaId){ toast("Sem ID."); throw new Error("missing id"); }
+    let ficha = null;
 
-let ficha = null;
+    const labelStatus = (s)=>({
+      rascunho:"Rascunho",
+      enviada:"Enviada",
+      em_analise:"Em análise",
+      aprovada:"Aprovada",
+      devolvida:"Devolvida",
+      concluida:"Concluída",
+      cancelada:"Cancelada"
+    }[s] || s);
 
-function kv(label, value){
-  return `<div style="margin:2px 0"><b>${label}:</b> ${value ?? "—"}</div>`;
-}
+    function prettyDump(f){
+      const contatos = Array.isArray(f.contatos) ? f.contatos : [];
+      return `
+        <div style="margin-top:10px;opacity:.95">
+          <b>Empresa:</b> ${f.empresa==="ms"?"M&S":"Vegas"}<br/>
+          <b>Razão:</b> ${f.razao_social||"—"}<br/>
+          <b>Fantasia:</b> ${f.nome_fantasia||"—"}<br/>
+          <b>CNPJ:</b> ${f.cnpj||"—"}<br/>
+          <b>IE:</b> ${f.inscr_estadual||"—"}<br/>
+          <b>Atividade:</b> ${f.ramo_atividade||"—"}<br/><br/>
 
-function fmtDT(iso){ return iso ? new Date(iso).toLocaleString("pt-BR") : "—"; }
+          <b>Endereço:</b> ${(f.endereco||"—")} ${(f.numero||"")} ${(f.complemento||"")}<br/>
+          <b>Bairro:</b> ${f.bairro||"—"}<br/>
+          <b>Cidade/UF:</b> ${(f.cidade||"—")} / ${(f.uf||"—")}<br/>
+          <b>CEP:</b> ${f.cep||"—"}<br/><br/>
 
-async function load(){
-  const { data, error } = await sb.from("cred_fichas").select("*").eq("id", fichaId).single();
-  if(error){ toast("Erro: " + error.message); return; }
-  ficha = data;
+          <b>Meio de captura:</b> ${f.meio_captura||"—"} ${f.meio_captura_outros?("("+f.meio_captura_outros+")"):""}<br/>
+          <b>EC Cielo:</b> ${f.ec_cielo||"—"}<br/>
+          <b>EC Rede:</b> ${f.ec_rede||"—"}<br/><br/>
 
-  el("titulo").textContent = ficha.nome_fantasia || ficha.razao_social || "—";
-  el("sub").textContent = `${ficha.cnpj || ""} • ${ficha.cidade || ""}/${ficha.uf || ""}`;
-  el("statusPill").textContent = ficha.status || "—";
-  el("meta").textContent = `Atualizado: ${fmtDT(ficha.updated_at)} • Criado: ${fmtDT(ficha.created_at)} • ID: ${ficha.id}`;
+          <b>Prazo pagamento:</b> ${f.prazo_pagamento||"—"} ${f.prazo_pagamento_outros?("("+f.prazo_pagamento_outros+")"):""}<br/>
+          <b>Custo locação:</b> ${f.custo_locacao ?? "—"}<br/>
+          <b>Taxa fidelidade:</b> ${f.taxa_fidelidade ?? "—"}<br/>
+          <b>Taxa antecipação:</b> ${f.taxa_antecipacao ?? "—"}<br/><br/>
 
-  const ass = [];
-  if(ficha.assinado_em) ass.push(`Assinado em ${fmtDT(ficha.assinado_em)}`);
-  if(ficha.ass_cliente_dataurl) ass.push("Cliente assinou");
-  if(ficha.ass_vendedor_dataurl) ass.push("Vendedor assinou");
-  el("assInfo").textContent = ass.length ? ass.join(" • ") : "Sem assinaturas (ok se foi remoto).";
+          <b>Teste ativação:</b> ${f.teste_nome||"—"} | ${f.teste_telefone||"—"} | ${f.teste_email||"—"}<br/><br/>
 
-  if(ficha.ass_cliente_dataurl){
-    el("imgCliente").src = ficha.ass_cliente_dataurl;
-    el("imgCliente").style.display = "block";
-  }
-  el("nomeCliente").textContent = ficha.ass_cliente_nome ? `Nome: ${ficha.ass_cliente_nome}` : "";
+          <b>Observações:</b> ${f.observacoes||"—"}<br/><br/>
 
-  if(ficha.ass_vendedor_dataurl){
-    el("imgVend").src = ficha.ass_vendedor_dataurl;
-    el("imgVend").style.display = "block";
-  }
-  el("nomeVend").textContent = ficha.ass_vendedor_nome ? `Nome: ${ficha.ass_vendedor_nome}` : "";
+          <b>Contatos:</b><br/>
+          ${contatos.length ? contatos.map(c=>`• <b>${c.tipo}</b>: ${c.nome||"—"} | ${c.telefone||"—"} | ${c.email||"—"}<br/>`).join("") : "—"}
+        </div>
+      `;
+    }
 
-  el("dados").innerHTML = [
-    kv("Razão Social", ficha.razao_social),
-    kv("Nome Fantasia", ficha.nome_fantasia),
-    kv("CNPJ", ficha.cnpj),
-    kv("I.E", ficha.ie),
-    "<hr style='border:0;border-top:1px solid rgba(255,255,255,.08);margin:10px 0'>",
-    kv("Endereço", `${ficha.endereco || ""}, ${ficha.numero || ""} ${ficha.complemento ? " - " + ficha.complemento : ""}`),
-    kv("Bairro", ficha.bairro),
-    kv("Cidade/UF", `${ficha.cidade || ""}/${ficha.uf || ""}`),
-    kv("CEP", ficha.cep),
-    kv("Telefone/Whats", ficha.telefone_whatsapp),
-    kv("E-mail", ficha.email),
-    kv("Contato", ficha.contato_nome),
-    "<hr style='border:0;border-top:1px solid rgba(255,255,255,.08);margin:10px 0'>",
-    kv("Banco", ficha.banco),
-    kv("Agência", ficha.agencia),
-    kv("Conta Corrente", ficha.conta_corrente),
-    kv("Favorecido", ficha.favorecido),
-    kv("Doc Favorecido", ficha.favorecido_doc),
-    "<hr style='border:0;border-top:1px solid rgba(255,255,255,.08);margin:10px 0'>",
-    kv("Meios de captura", ficha.meios_captura),
-    kv("Custo locação", ficha.custo_locacao),
-    kv("Taxa Adm", ficha.taxa_adm),
-    kv("Taxa Publicidade", ficha.taxa_publicidade),
-    kv("Taxa Fidelidade", ficha.taxa_fidelidade),
-    "<hr style='border:0;border-top:1px solid rgba(255,255,255,.08);margin:10px 0'>",
-    kv("Representante", ficha.rep_nome),
-    kv("Nascimento", ficha.rep_nascimento),
-    kv("CPF", ficha.rep_cpf),
-    kv("Prazo Pagamento", ficha.prazo_pagamento),
-    "<hr style='border:0;border-top:1px solid rgba(255,255,255,.08);margin:10px 0'>",
-    kv("Observações", (ficha.observacoes || "").replaceAll("\n","<br>"))
-  ].join("");
+    async function load(){
+      const { data, error } = await sb
+        .from("fichas_credenciamento")
+        .select("*")
+        .eq("id", id)
+        .single();
 
-  await loadLogs();
-}
+      if(error){
+        toast("Erro ao carregar: "+error.message);
+        return;
+      }
 
-async function loadLogs(){
-  const { data, error } = await sb
-    .from("cred_fichas_logs")
-    .select("created_at, actor_role, evento, mensagem")
-    .eq("ficha_id", fichaId)
-    .order("created_at", { ascending:false });
+      ficha = data;
+      el("cliente").textContent = data.nome_fantasia || data.razao_social || "—";
+      el("meta").textContent = `${data.cidade||"—"} / ${data.uf||"—"} • ${data.cnpj||"—"}`;
 
-  if(error){ el("logs").textContent = "Erro ao carregar logs."; return; }
+      el("statusTxt").textContent = labelStatus(data.status);
+      el("updatedTxt").textContent = `Atualizado: ${data.updated_at ? new Date(data.updated_at).toLocaleString("pt-BR") : "—"}`;
 
-  el("logs").innerHTML = (data||[]).map(l=>{
-    return `<div style="padding:10px;border:1px solid rgba(255,255,255,.10);border-radius:12px;margin:8px 0;background:rgba(0,0,0,.12)">
-      <div><b>${l.evento}</b> <span class="pill">${l.actor_role||"—"}</span> <span style="opacity:.8">• ${fmtDT(l.created_at)}</span></div>
-      <div style="margin-top:6px">${(l.mensagem||"").replaceAll("\n","<br>")}</div>
-    </div>`;
-  }).join("") || "Sem logs ainda.";
-}
+      el("review_notes").value = data.review_notes || "";
+      el("dump").innerHTML = prettyDump(data);
 
-async function aplicar(){
-  if(!ficha) return;
-  const novo = el("acao").value;
-  const msg = el("msg").value || null;
+      el("last").textContent =
+        `Criado: ${data.created_at ? new Date(data.created_at).toLocaleString("pt-BR") : "—"} • Revisado: ${data.reviewed_at ? new Date(data.reviewed_at).toLocaleString("pt-BR") : "—"}`;
+    }
 
-  el("btnAplicar").disabled = true;
+    async function setStatus(next){
+      const payload = {
+        status: next,
+        review_notes: el("review_notes").value || null,
+        reviewed_by: user.id,
+        reviewed_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
 
-  const patch = {
-    status: novo,
-    revisado_por: user.id,
-    revisado_em: new Date().toISOString()
-  };
-  if(novo === "pendente") patch.motivo_pendencia = msg || "pendente";
-  if(novo !== "pendente") patch.motivo_pendencia = null;
+      const { error } = await sb
+        .from("fichas_credenciamento")
+        .update(payload)
+        .eq("id", id);
 
-  const { error } = await sb.from("cred_fichas").update(patch).eq("id", fichaId);
-  if(error){ toast("Erro: " + error.message); el("btnAplicar").disabled=false; return; }
+      if(error){
+        toast("Erro: "+error.message);
+        return;
+      }
+      toast("✅ Atualizado!");
+      await load();
+    }
 
-  await sb.from("cred_fichas_logs").insert({
-    ficha_id: fichaId,
-    actor_id: user.id,
-    actor_role: prof.role,
-    evento: "status",
-    mensagem: `Status → ${novo}` + (msg ? `\n${msg}` : "")
-  });
+    el("btnEmAnalise").addEventListener("click", ()=>setStatus("em_analise"));
+    el("btnDevolver").addEventListener("click", ()=>setStatus("devolvida"));
+    el("btnAprovar").addEventListener("click", ()=>setStatus("aprovada"));
+    el("btnConcluir").addEventListener("click", ()=>setStatus("concluida"));
 
-  toast("✅ Atualizado!");
-  el("msg").value = "";
-  el("btnAplicar").disabled = false;
-  await load();
-}
-
-el("btnAplicar").addEventListener("click", aplicar);
-
-await load();
-</script>
+    await load();
+  </script>
 </body>
 </html>
-
