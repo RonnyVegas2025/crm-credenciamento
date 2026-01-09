@@ -4,28 +4,51 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Detalhe</title>
+
   <link rel="stylesheet" href="assets/app.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: .8; }
-    .pill{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 10px;border-radius:999px;
-      background:rgba(255,255,255,.10);
-      font-size:12px;font-weight:800
+    .grid3{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:900px){.grid3{grid-template-columns:1fr}}
+
+    .rowBtns{display:flex;gap:10px;flex-wrap:wrap}
+
+    .btnMini{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      color:#fff;
+      font-weight:800;
     }
-    .pill.ok{ background:rgba(0,255,140,.16); }
-    .pill.mid{ background:rgba(255,200,0,.16); }
-    .pill.bad{ background:rgba(255,80,80,.16); }
-    .muted{ opacity:.75 }
-    .rowline{ border-top:1px solid rgba(255,255,255,.08); margin:14px 0; }
-    .tag{
-      display:inline-block;
-      padding:4px 8px;border-radius:999px;
-      background:rgba(255,255,255,.10);
-      font-size:12px;font-weight:800
+    .btnMini:hover{background:rgba(255,255,255,.10)}
+
+    .btnPrimary{
+      width:100%;
+      padding:14px 16px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:900;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(80,170,255,.18);
+      color:#fff;
     }
-    .cardTitle{ font-weight:900; font-size:14px; letter-spacing:.2px }
+    .btnPrimary:hover{background:rgba(80,170,255,.26)}
+
+    .muted{opacity:.75}
+    .tag{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}
+    .rowline{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
+
+    .pill.ok{background:rgba(0,255,140,.16);border:1px solid rgba(0,255,140,.28)}
+    .pill.mid{background:rgba(255,200,0,.14);border:1px solid rgba(255,200,0,.24)}
+    .pill.bad{background:rgba(255,80,80,.14);border:1px solid rgba(255,80,80,.24)}
+
+    .grid2{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+    @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+
+    .timeline{margin-top:10px}
   </style>
 </head>
 
@@ -37,111 +60,121 @@
 
       <div class="nav">
         <a href="dashboard.html">📊</a>
-        <a href="nova.html">➕</a>
         <a href="negociacoes.html">📋</a>
+        <a href="nova.html">➕</a>
+        <a href="ficha.html">🧾+</a>
+        <a href="fichas.html">🧾</a>
         <a href="mapa.html">📍</a>
         <a href="#" id="btnLogout">🚪</a>
       </div>
     </div>
 
-    <!-- CABEÇALHO -->
+    <!-- CABEÇALHO DO CLIENTE -->
     <div class="card" style="margin-top:12px">
-      <div class="grid2">
+      <div class="grid2" style="align-items:center">
         <div>
           <div class="label">Cliente</div>
           <div id="cliente_nome" style="font-weight:900;font-size:18px">Carregando…</div>
           <div class="small" id="cliente_meta"></div>
-          <div style="margin-top:10px">
-            <span class="tag" id="tagProduto">Produto: —</span>
-            <span class="tag" id="tagAgrupamento" style="margin-left:6px;opacity:.85">Agrupamento: —</span>
-          </div>
         </div>
-
         <div style="text-align:right">
           <a class="btn" href="negociacoes.html" id="btnVoltar">← Voltar</a>
         </div>
       </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Produto</div>
+          <select id="produto">
+            <option value="vegaspay">Vegas Pay</option>
+            <option value="agregados">Agregados</option>
+            <option value="cartoes">Cartões</option>
+            <option value="credenciamento">Credenciamento</option>
+            <option value="clube">Clube</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="label">Status</div>
+          <select id="status">
+            <option value="negociacao">Em negociação</option>
+            <option value="ativo">Ativo (contrato firmado)</option>
+            <option value="sem_interesse">Sem interesse</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Volume (R$)</div>
+          <input id="volume" type="number" step="0.01" placeholder="Ex: 25000">
+        </div>
+        <div>
+          <div class="label">Qtd (licenças/cartões)</div>
+          <input id="qtd" type="number" step="1" placeholder="Ex: 20">
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div>
+        <div class="label">Observações</div>
+        <textarea id="obs" rows="4" placeholder="Anote as taxas atuais, objeções, próximos passos…"></textarea>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid2">
+        <div>
+          <div class="label">Próxima ação</div>
+          <input id="prox_acao" type="text" placeholder="Ex: Enviar proposta">
+        </div>
+        <div>
+          <div class="label">Data</div>
+          <input id="prox_data" type="date">
+        </div>
+      </div>
+
+      <div style="height:16px"></div>
+
+      <div class="grid2">
+        <button class="btn" id="btnSalvar">Salvar alterações</button>
+        <button class="btn btnGreen" id="btnSalvarVoltar">Salvar e voltar</button>
+      </div>
+
+      <div class="small" id="last" style="margin-top:10px;opacity:.8"></div>
     </div>
 
-    <!-- DADOS DO COMÉRCIO (FIXO) -->
-    <div class="card" style="margin-top:12px">
-      <div class="cardTitle">Dados do comércio</div>
-      <div class="small muted">Informações do cliente (independente do produto).</div>
-
-      <div style="height:12px"></div>
-
-      <div class="grid2">
+    <!-- CARD: FICHA (SÓ PARA CREDENCIAMENTO) -->
+    <div class="card" id="cardFicha" style="margin-top:12px;display:none">
+      <div class="grid2" style="align-items:center">
         <div>
-          <div class="label">Cidade</div>
-          <input id="cidade" type="text" placeholder="Ex: Americana">
-        </div>
-        <div>
-          <div class="label">CNPJ (opcional)</div>
-          <input id="cnpj" type="text" placeholder="Ex: 12.345.678/0001-90">
-        </div>
-      </div>
-
-      <div style="height:12px"></div>
-
-      <div class="grid2">
-        <div>
-          <div class="label">Contato (nome)</div>
-          <input id="contato_nome" type="text" placeholder="Ex: Maria">
-        </div>
-        <div>
-          <div class="label">Telefone (WhatsApp)</div>
-          <input id="contato_telefone" type="text" placeholder="Ex: 19 99999-9999">
-        </div>
-      </div>
-
-      <div style="height:12px"></div>
-
-      <div class="grid2">
-        <div>
-          <div class="label">E-mail</div>
-          <input id="contato_email" type="email" placeholder="Ex: contato@empresa.com.br">
-        </div>
-        <div>
-          <div class="label">Endereço</div>
-          <input id="endereco" type="text" placeholder="Rua / Av, número">
-        </div>
-      </div>
-
-      <div style="height:12px"></div>
-
-      <div class="grid2">
-        <div>
-          <div class="label">Bairro</div>
-          <input id="bairro" type="text" placeholder="Ex: Centro">
-        </div>
-        <div>
-          <div class="label">CEP</div>
-          <input id="cep" type="text" placeholder="Ex: 13400-000">
-        </div>
-      </div>
-
-      <div style="height:12px"></div>
-
-      <div class="grid2">
-        <div>
-          <div class="label">UF</div>
-          <input id="uf" type="text" maxlength="2" placeholder="Ex: SP">
-        </div>
-        <div>
-          <div class="label">—</div>
-          <div class="small muted" style="padding:12px;background:rgba(255,255,255,.04);border-radius:12px">
-            Dica: se o comércio não tiver CNPJ, tudo bem — o sistema agrupa por Nome + Cidade.
+          <div class="label" style="font-weight:900">Ficha de Credenciamento</div>
+          <div class="small muted" id="fichaHint">Quando o contrato estiver firmado (status ATIVO), você gera a ficha final pro ADM cadastrar sem erro.</div>
+          <div style="margin-top:10px">
+            <span class="tag" id="tagFicha">Ficha: —</span>
           </div>
         </div>
+        <div style="text-align:right">
+          <button class="btn btnGreen" id="btnGerarFicha" style="display:none">✅ Gerar ficha</button>
+          <button class="btn" id="btnAbrirFicha" style="display:none">🧾 Abrir ficha</button>
+        </div>
       </div>
     </div>
 
-    <!-- PRODUTOS DO COMÉRCIO (TERMÔMETRO + CARDS) -->
+    <!-- VISÃO DO CLIENTE (PRODUTOS + TERMÔMETRO) -->
     <div class="card" style="margin-top:12px">
       <div class="grid2" style="align-items:center">
         <div>
-          <div class="cardTitle">Produtos deste comércio</div>
-          <div class="small muted">Clique num produto pra abrir a negociação correspondente.</div>
+          <div class="label" style="font-weight:900">Produtos deste cliente</div>
+          <div class="small muted">Clique em um produto para abrir a negociação correspondente.</div>
+          <div style="margin-top:10px">
+            <span class="tag" id="tagAgrupamento">Agrupamento: —</span>
+          </div>
         </div>
 
         <div style="text-align:right">
@@ -162,104 +195,25 @@
       <div id="produtosCliente" class="grid2"></div>
     </div>
 
-    <!-- NEGOCIAÇÃO SELECIONADA (POR PRODUTO) -->
-    <div class="card" style="margin-top:12px">
-      <div class="cardTitle">Negociação selecionada</div>
-      <div class="small muted">Aqui é a negociação do produto que você clicou.</div>
-
-      <div style="height:12px"></div>
-
-      <div class="grid2">
-        <div>
-          <div class="label">Produto</div>
-          <select id="produto">
-            <option value="vegaspay">Vegas Pay</option>
-            <option value="agregados">Agregados</option>
-            <option value="cartoes">Cartões</option>
-            <option value="credenciamento">Credenciamento</option>
-            <option value="clube">Clube</option>
-          </select>
-        </div>
-
-        <div>
-          <div class="label">Status</div>
-          <select id="status">
-            <option value="negociacao">Em negociação</option>
-            <option value="ativo">Ativo</option>
-            <option value="sem_interesse">Sem interesse</option>
-          </select>
-        </div>
-      </div>
-
-      <div style="height:12px"></div>
-
-      <div class="grid2">
-        <div>
-          <div class="label">Volume (R$)</div>
-          <input id="volume" type="number" step="0.01" placeholder="Ex: 25000">
-        </div>
-
-        <div>
-          <div class="label">Qtd (licenças/cartões)</div>
-          <input id="qtd" type="number" step="1" placeholder="Ex: 20">
-        </div>
-      </div>
-
-      <div style="height:12px"></div>
-
-      <div class="grid2">
-        <div>
-          <div class="label">Observação rápida (campo atual)</div>
-          <input id="obs" type="text" placeholder="Ex: Taxa atual, objeção, próximo passo…">
-        </div>
-        <div>
-          <div class="label">Próxima ação</div>
-          <input id="prox_acao" type="text" placeholder="Ex: Enviar proposta">
-        </div>
-      </div>
-
-      <div style="height:12px"></div>
-
-      <div class="grid2">
-        <div>
-          <div class="label">Data</div>
-          <input id="prox_data" type="date">
-        </div>
-        <div>
-          <div class="label">—</div>
-          <div class="small muted" style="padding:12px;background:rgba(255,255,255,.04);border-radius:12px">
-            Dica: histórico detalhado você registra lá embaixo em “Registrar nova ação”.
-          </div>
-        </div>
-      </div>
-
-      <div style="height:16px"></div>
-
-      <div class="grid2">
-        <button class="btn" id="btnSalvar">Salvar alterações</button>
-        <button class="btn btnGreen" id="btnSalvarVoltar">Salvar e voltar</button>
-      </div>
-
-      <div class="small" id="last" style="margin-top:10px;opacity:.8"></div>
-    </div>
-
     <!-- HISTÓRICO -->
     <div class="card" style="margin-top:12px">
       <div class="grid2" style="align-items:center">
         <div>
-          <div class="cardTitle">Histórico (linha do tempo)</div>
-          <div class="small muted">Data/hora + status + comentário (por produto).</div>
+          <div class="label" style="font-weight:900">Histórico (linha do tempo)</div>
+          <div class="small muted">O que aconteceu de verdade (data/hora + status + comentário).</div>
           <div style="margin-top:10px">
             <span class="tag" id="tagTimelineProduto">Produto desta linha do tempo: —</span>
           </div>
         </div>
+
         <div style="text-align:right">
           <button class="btn" id="btnNovaTimeline">+ Registrar nova ação</button>
         </div>
       </div>
 
       <div class="rowline"></div>
-      <div id="timeline"></div>
+
+      <div id="timeline" class="timeline"></div>
 
       <div class="rowline"></div>
 
@@ -273,6 +227,7 @@
               <option value="sem_interesse">Sem interesse</option>
             </select>
           </div>
+
           <div>
             <div class="label">Próxima ação</div>
             <input id="tl_prox" type="text" placeholder="Ex: Fazer ligação">
@@ -289,10 +244,11 @@
         <div style="height:12px"></div>
 
         <div class="grid2">
-          <button class="btn" id="btnSalvarTimeline">Salvar no histórico</button>
+          <button class="btn btnGreen" id="btnSalvarTimeline">Salvar no histórico</button>
           <button class="btn" id="btnCancelarTimeline">Cancelar</button>
         </div>
       </div>
+
     </div>
 
   </div>
@@ -327,6 +283,12 @@
       throw new Error("missing id");
     }
 
+    // mantém filtros ao voltar (se veio de negociacoes.html com querystring)
+    const backParams = new URLSearchParams(location.search);
+    backParams.delete("id");
+    const backUrl = "negociacoes.html" + (backParams.toString() ? `?${backParams.toString()}` : "");
+    el("btnVoltar").href = backUrl;
+
     const ALL_PRODUCTS = ["vegaspay","agregados","cartoes","credenciamento","clube"];
     let currentAction = null;
 
@@ -338,6 +300,14 @@
     function pillHtml(status){
       const label = statusLabel(status || "negociacao");
       return `<span class="pill ${pillClass(status)}">${label}</span>`;
+    }
+
+    function numOrNull(v){
+      if(v===null || v===undefined) return null;
+      const s = String(v).trim();
+      if(!s) return null;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : null;
     }
 
     function lastByProduct(rows){
@@ -385,7 +355,7 @@
               Próxima: <b>${it.prox || "—"}</b>
             </div>
 
-            <div style="margin-top:10px;font-size:16px;font-weight:700">
+            <div style="margin-top:10px;font-size:16px;font-weight:800">
               ${String(it.msg || "").replaceAll("<","&lt;")}
             </div>
           </div>
@@ -425,133 +395,97 @@
 
     function openTimelineForm(){
       el("formTimeline").style.display = "block";
+      el("btnNovaTimeline").disabled = true;
+
       el("tl_status").value = el("status").value || "negociacao";
       el("tl_prox").value = el("prox_acao").value || "";
       el("tl_msg").value = "";
-      el("tl_msg").focus();
     }
+
     function closeTimelineForm(){
       el("formTimeline").style.display = "none";
+      el("btnNovaTimeline").disabled = false;
     }
+
+    el("btnNovaTimeline").addEventListener("click", openTimelineForm);
+    el("btnCancelarTimeline").addEventListener("click", closeTimelineForm);
 
     async function saveTimeline(){
       if(!currentAction) return;
 
-      const msg = el("tl_msg").value.trim();
-      if(!msg){
-        toast("Escreve pelo menos uma linha no comentário 🙂");
+      const status = el("tl_status").value;
+      const prox = el("tl_prox").value || null;
+      const msg = el("tl_msg").value || "";
+
+      if(!msg.trim()){
+        toast("Escreve um comentário rapidinho (senão vira histórico vazio).");
         return;
       }
 
-      const item = {
-        at: new Date().toISOString(),
-        status: el("tl_status").value || "negociacao",
-        prox: el("tl_prox").value || null,
-        msg,
-        by: prof?.nome || "Você",
-        produto: currentAction.produto
-      };
-
       el("btnSalvarTimeline").disabled = true;
 
+      // 1) grava no action_logs (linha do tempo real)
+      const { error: logErr } = await sb
+        .from("action_logs")
+        .insert({
+          action_id: currentAction.id,
+          user_id: user.id,
+          status,
+          prox_acao: prox,
+          note: msg
+        });
+
+      if(logErr){
+        el("btnSalvarTimeline").disabled = false;
+        toast("Erro ao salvar histórico: " + logErr.message);
+        return;
+      }
+
+      // 2) opcional: mantém obs_history também, se existir coluna (pra compatibilidade)
       if(useObsHistory){
-        const { data: cur, error: e1 } = await sb
+        const entry = {
+          at: new Date().toISOString(),
+          status,
+          prox,
+          msg,
+          by: prof?.nome || "Você",
+          produto: currentAction.produto
+        };
+
+        const next = Array.isArray(currentAction.obs_history) ? currentAction.obs_history.slice() : [];
+        next.push(entry);
+
+        const { error: upErr } = await sb
           .from("actions")
-          .select("obs_history")
-          .eq("id", actionId)
-          .single();
+          .update({ obs_history: next, updated_at: new Date().toISOString() })
+          .eq("id", currentAction.id);
 
-        if(e1){
-          el("btnSalvarTimeline").disabled = false;
-          toast("Erro: " + e1.message);
-          return;
-        }
-
-        const list = Array.isArray(cur?.obs_history) ? cur.obs_history : [];
-        list.push(item);
-
-        const { error: e2 } = await sb
-          .from("actions")
-          .update({
-            obs_history: list,
-            status: item.status,
-            prox_acao: item.prox,
-            updated_at: new Date().toISOString()
-          })
-          .eq("id", actionId);
-
-        el("btnSalvarTimeline").disabled = false;
-
-        if(e2){
-          toast("Erro ao salvar histórico: " + e2.message);
-          return;
-        }
-      } else {
-        const { error: e2 } = await sb
-          .from("actions")
-          .update({
-            obs: msg,
-            status: item.status,
-            prox_acao: item.prox,
-            updated_at: new Date().toISOString()
-          })
-          .eq("id", actionId);
-
-        el("btnSalvarTimeline").disabled = false;
-
-        if(e2){
-          toast("Erro ao salvar: " + e2.message);
-          return;
-        }
+        if(upErr) console.warn("obs_history update error", upErr);
       }
 
       toast("✅ Histórico registrado!");
       closeTimelineForm();
-      await loadAction();
-      await loadClientPanel();
+      el("btnSalvarTimeline").disabled = false;
+
       await loadTimeline();
     }
 
-    // ✅ AQUI É O PULO DO GATO:
-    // Se tiver client_id -> agrupa por client_id.
-    // Se NÃO tiver -> tenta agrupar por CNPJ (se existir).
-    // Se não tiver CNPJ -> agrupa por cliente_nome + cidade.
+    el("btnSalvarTimeline").addEventListener("click", saveTimeline);
+
     async function loadClientPanel(){
-      if(!currentAction) return;
-
-      // monta link de nova negociação com “dados do comércio”
-      const baseNova =
-        `nova.html?cliente_nome=${encodeURIComponent(currentAction.cliente_nome||"")}`+
-        `&cidade=${encodeURIComponent(currentAction.cidade||"")}`+
-        `&uf=${encodeURIComponent(currentAction.uf||"")}`+
-        `&cnpj=${encodeURIComponent(currentAction.cnpj||"")}`+
-        `&contato_nome=${encodeURIComponent(currentAction.contato_nome||"")}`+
-        `&contato_telefone=${encodeURIComponent(currentAction.contato_telefone||"")}`+
-        `&contato_email=${encodeURIComponent(currentAction.contato_email||"")}`+
-        `&endereco=${encodeURIComponent(currentAction.endereco||"")}`+
-        `&bairro=${encodeURIComponent(currentAction.bairro||"")}`+
-        `&cep=${encodeURIComponent(currentAction.cep||"")}`;
-
-      el("btnNovaNegociacao").href = baseNova + (currentAction.client_id ? `&client_id=${encodeURIComponent(currentAction.client_id)}` : "");
-
-      let q = sb.from("actions").select("id, produto, status, updated_at, created_at, client_id, cliente_nome, cidade, cnpj");
-      let agrupamentoTxt = "";
-
-      if(currentAction.client_id){
-        q = q.eq("client_id", currentAction.client_id);
-        agrupamentoTxt = "client_id";
-      } else if(currentAction.cnpj){
-        q = q.eq("cnpj", currentAction.cnpj);
-        agrupamentoTxt = "CNPJ";
-      } else {
-        q = q.eq("cliente_nome", currentAction.cliente_nome || "");
-        if(currentAction.cidade) q = q.eq("cidade", currentAction.cidade);
-        agrupamentoTxt = "Nome + Cidade";
+      if(!currentAction?.client_id){
+        el("tagAgrupamento").textContent = "Agrupamento: sem client_id";
+        el("produtosCliente").innerHTML = `<div class="small" style="opacity:.75">Sem client_id para agrupar negociações deste cliente.</div>`;
+        return;
       }
 
-      el("tagAgrupamento").textContent = `Agrupamento: ${agrupamentoTxt}`;
+      el("tagAgrupamento").textContent = `Agrupamento: ${currentAction.client_id}`;
 
-      const { data, error } = await q;
+      const { data, error } = await sb
+        .from("actions")
+        .select("id, produto, status, volume, updated_at, created_at, client_id, cliente_nome")
+        .eq("client_id", currentAction.client_id);
+
       if(error){
         toast("Erro painel cliente: " + error.message);
         return;
@@ -571,15 +505,17 @@
 
       el("termText").textContent = `${uniqueCount}/${total} (${pct}%)`;
 
+      el("btnNovaNegociacao").href =
+        `nova.html?client_id=${encodeURIComponent(currentAction.client_id)}&cliente_nome=${encodeURIComponent(currentAction.cliente_nome||"")}`;
+
       const cards = ALL_PRODUCTS.map(p=>{
         const r = byProd.get(p);
         const active = (currentAction.produto === p) ? 'style="outline:2px solid rgba(255,255,255,.25)"' : "";
 
         if(!r){
-          const linkCriar = baseNova + `&produto=${encodeURIComponent(p)}`;
           return `
             <div class="card" ${active} style="padding:14px;cursor:pointer;opacity:.85"
-                 onclick="window.location.href='${linkCriar}'">
+                 onclick="window.location.href='nova.html?client_id=${encodeURIComponent(currentAction.client_id)}&produto=${encodeURIComponent(p)}&cliente_nome=${encodeURIComponent(currentAction.cliente_nome||"")}'">
               <div style="display:flex;justify-content:space-between;align-items:center">
                 <div style="font-weight:900">${pLabel(p)}</div>
                 <div class="small" style="opacity:.75">não iniciado</div>
@@ -604,6 +540,140 @@
       el("produtosCliente").innerHTML = cards;
     }
 
+    // ==========================
+    // FICHA DE CREDENCIAMENTO
+    // ==========================
+    let currentFicha = null;
+
+    function labelFichaStatus(s){
+      const map = {
+        rascunho: "Rascunho",
+        enviada: "Enviada",
+        em_analise: "Em análise",
+        aprovada: "Aprovada",
+        devolvida: "Devolvida",
+        concluida: "Concluída",
+        cancelada: "Cancelada",
+        em_analise2: "Em análise"
+      };
+      return map[s] || s || "—";
+    }
+
+    async function loadFichaCard(){
+      // só aparece se for produto credenciamento
+      const isCred = (currentAction?.produto === "credenciamento");
+      el("cardFicha").style.display = isCred ? "block" : "none";
+      if(!isCred) return;
+
+      el("tagFicha").textContent = "Ficha: carregando…";
+      el("btnGerarFicha").style.display = "none";
+      el("btnAbrirFicha").style.display = "none";
+
+      const { data, error } = await sb
+        .from("fichas_credenciamento")
+        .select("id,status,updated_at,created_at")
+        .eq("action_id", currentAction.id)
+        .maybeSingle();
+
+      if(error){
+        el("tagFicha").textContent = "Ficha: erro ao carregar";
+        console.warn("load ficha error", error);
+        return;
+      }
+
+      currentFicha = data || null;
+
+      if(currentFicha){
+        el("tagFicha").textContent = `Ficha: ${labelFichaStatus(currentFicha.status)} • Atual.: ${fmtDateTime(currentFicha.updated_at || currentFicha.created_at)}`;
+        el("btnAbrirFicha").style.display = "inline-block";
+        el("btnGerarFicha").style.display = "none";
+        return;
+      }
+
+      // não existe ficha ainda
+      if(currentAction.status === "ativo"){
+        el("tagFicha").textContent = "Ficha: não gerada";
+        el("btnGerarFicha").style.display = "inline-block";
+      } else {
+        el("tagFicha").textContent = "Ficha: disponível quando status estiver ATIVO";
+      }
+    }
+
+    async function gerarFicha(){
+      if(!currentAction) return;
+
+      if(currentAction.produto !== "credenciamento"){
+        toast("Esse botão só faz sentido no produto Credenciamento.");
+        return;
+      }
+
+      if(currentAction.status !== "ativo"){
+        toast("Pra gerar ficha, primeiro deixa a negociação como ATIVO (contrato firmado).");
+        return;
+      }
+
+      el("btnGerarFicha").disabled = true;
+
+      // Prefill básico vindo da negociação
+      const contatos = [];
+      if(currentAction.contato_nome || currentAction.contato_telefone || currentAction.contato_email){
+        contatos.push({
+          nome: currentAction.contato_nome || "",
+          telefone: currentAction.contato_telefone || "",
+          email: currentAction.contato_email || ""
+        });
+      }
+
+      const payload = {
+        action_id: currentAction.id,
+        created_by: user.id,
+        status: "rascunho",
+
+        // dados que a ADM costuma precisar
+        razao_social: currentAction.cliente_nome || null,
+        nome_fantasia: currentAction.cliente_nome || null,
+        cnpj: currentAction.cnpj || null,
+        ramo_atividade: currentAction.segmento || null,
+
+        endereco: currentAction.endereco || null,
+        bairro: currentAction.bairro || null,
+        cidade: currentAction.cidade || null,
+        uf: currentAction.uf || null,
+        cep: currentAction.cep || null,
+
+        contatos
+      };
+
+      const { data, error } = await sb
+        .from("fichas_credenciamento")
+        .insert(payload)
+        .select("id")
+        .single();
+
+      if(error){
+        el("btnGerarFicha").disabled = false;
+        toast("Erro ao gerar ficha: " + error.message);
+        return;
+      }
+
+      toast("✅ Ficha criada! Abrindo…");
+      window.location.href = `ficha.html?id=${data.id}`;
+    }
+
+    function abrirFicha(){
+      if(!currentFicha?.id){
+        toast("Não achei a ficha vinculada (estranho). Tenta recarregar.");
+        return;
+      }
+      window.location.href = `ficha.html?id=${currentFicha.id}`;
+    }
+
+    el("btnGerarFicha").addEventListener("click", gerarFicha);
+    el("btnAbrirFicha").addEventListener("click", abrirFicha);
+
+    // ==========================
+    // CARREGAR AÇÃO / SALVAR
+    // ==========================
     async function loadAction(){
       const { data, error } = await sb
         .from("actions")
@@ -619,7 +689,7 @@
       currentAction = data;
 
       el("cliente_nome").textContent = data.cliente_nome || "—";
-      el("cliente_meta").textContent = `${data.cidade || ""}${data.cnpj ? " • " + data.cnpj : ""}`;
+      el("cliente_meta").textContent = `${data.cidade || ""}${data.uf ? "/" + data.uf : ""}${data.cnpj ? " • " + data.cnpj : ""}`;
 
       el("produto").value = data.produto || "vegaspay";
       el("status").value = data.status || "negociacao";
@@ -627,89 +697,60 @@
       el("qtd").value = (data.qtd ?? "");
       el("obs").value = (data.obs ?? "");
       el("prox_acao").value = (data.prox_acao ?? "");
-      el("prox_data").value = data.prox_data ? String(data.prox_data).slice(0,10) : "";
+      el("prox_data").value = (data.prox_data ?? "");
 
-      // dados do comércio
-      el("cidade").value = (data.cidade ?? "");
-      el("cnpj").value = (data.cnpj ?? "");
-      el("contato_nome").value = (data.contato_nome ?? "");
-      el("contato_telefone").value = (data.contato_telefone ?? "");
-      el("contato_email").value = (data.contato_email ?? "");
-      el("endereco").value = (data.endereco ?? "");
-      el("bairro").value = (data.bairro ?? "");
-      el("uf").value = (data.uf ?? "");
-      el("cep").value = (data.cep ?? "");
-
-      el("tagProduto").textContent = `Produto: ${pLabel(data.produto || "vegaspay")}`;
       el("tagTimelineProduto").textContent = `Produto desta linha do tempo: ${pLabel(data.produto || "vegaspay")}`;
 
-      el("last").textContent =
-        `Última atualização: ${data.updated_at ? new Date(data.updated_at).toLocaleString("pt-BR") : "—"}`;
+      await loadTimeline();
+      await loadClientPanel();
+      await loadFichaCard();
     }
 
-    async function save(goBack=false){
+    async function saveAction(goBack=false){
+      if(!currentAction) return;
+
       el("btnSalvar").disabled = true;
       el("btnSalvarVoltar").disabled = true;
 
       const payload = {
-        // negociação
         produto: el("produto").value,
         status: el("status").value,
-        volume: el("volume").value ? Number(el("volume").value) : null,
+        volume: numOrNull(el("volume").value),
         qtd: el("qtd").value ? Number(el("qtd").value) : null,
         obs: el("obs").value || null,
         prox_acao: el("prox_acao").value || null,
         prox_data: el("prox_data").value || null,
-
-        // dados do comércio
-        cidade: el("cidade").value || null,
-        cnpj: el("cnpj").value || null,
-        contato_nome: el("contato_nome").value || null,
-        contato_telefone: el("contato_telefone").value || null,
-        contato_email: el("contato_email").value || null,
-        endereco: el("endereco").value || null,
-        bairro: el("bairro").value || null,
-        uf: (el("uf").value || "").toUpperCase() || null,
-        cep: el("cep").value || null,
-
         updated_at: new Date().toISOString()
       };
 
       const { error } = await sb
         .from("actions")
         .update(payload)
-        .eq("id", actionId);
-
-      el("btnSalvar").disabled = false;
-      el("btnSalvarVoltar").disabled = false;
+        .eq("id", currentAction.id);
 
       if(error){
+        el("btnSalvar").disabled = false;
+        el("btnSalvarVoltar").disabled = false;
         toast("Erro ao salvar: " + error.message);
         return;
       }
 
       toast("✅ Salvo!");
-      await loadAction();
-      await loadClientPanel();
-      await loadTimeline();
+      el("last").textContent = "Atualizado: " + fmtDateTime(new Date().toISOString());
 
-      if(goBack){
-        window.location.href = "negociacoes.html";
-      }
+      // recarrega pra refletir status/visibilidade do botão da ficha
+      await loadAction();
+
+      el("btnSalvar").disabled = false;
+      el("btnSalvarVoltar").disabled = false;
+
+      if(goBack) window.location.href = backUrl;
     }
 
-    // listeners
-    el("btnSalvar").addEventListener("click", ()=>save(false));
-    el("btnSalvarVoltar").addEventListener("click", ()=>save(true));
+    el("btnSalvar").addEventListener("click", ()=>saveAction(false));
+    el("btnSalvarVoltar").addEventListener("click", ()=>saveAction(true));
 
-    el("btnNovaTimeline").addEventListener("click", openTimelineForm);
-    el("btnCancelarTimeline").addEventListener("click", closeTimelineForm);
-    el("btnSalvarTimeline").addEventListener("click", saveTimeline);
-
-    // init
     await loadAction();
-    await loadClientPanel();
-    await loadTimeline();
   </script>
 </body>
 </html>
