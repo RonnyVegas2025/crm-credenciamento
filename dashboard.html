@@ -1,79 +1,186 @@
-<!doctype html><html lang="pt-br"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Dashboard</title><link rel="stylesheet" href="assets/app.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body>
-<div class="wrap"><div class="top"><h1>Dashboard</h1><div class="sub" id="who">Carregando…</div>
-<div class="nav"><a href="ficha.html" title="Ficha">📝</a><a href="dashboard.html">📊</a><a href="nova.html">➕</a><a href="negociacoes.html">📋</a><a href="mapa.html">📍</a><a href="#" id="btnLogout">🚪</a></div></div>
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Dashboard</title>
 
-<div class="grid2">
-  <div class="card"><div class="label">Período</div>
-    <select id="period"><option value="7">7d</option><option value="30" selected>30d</option><option value="90">90d</option><option value="mtd">Mês</option><option value="all">Tudo</option></select>
+  <link rel="stylesheet" href="assets/app.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <h1>Dashboard</h1>
+      <div class="sub" id="who">Carregando…</div>
+
+      <div class="nav">
+        <a href="ficha.html" title="Ficha">📝</a>
+        <a href="dashboard.html">📊</a>
+        <a href="nova.html">➕</a>
+        <a href="negociacoes.html">📋</a>
+        <a href="mapa.html">📍</a>
+        <a href="#" id="btnLogout">🚪</a>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="label">Período</div>
+        <select id="period">
+          <option value="7">7d</option>
+          <option value="30" selected>30d</option>
+          <option value="90">90d</option>
+          <option value="mtd">Mês</option>
+          <option value="all">Tudo</option>
+        </select>
+      </div>
+
+      <div class="card" id="sellerCard" style="display:none">
+        <div class="label">Vendedor (gestor/adm)</div>
+        <select id="seller"></select>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px" id="summary"></div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="value">Cards clicáveis</div>
+      <div class="small">Ativo / Em negociação / Sem interesse por produto.</div>
+      <div id="cards" class="grid2" style="margin-top:12px"></div>
+    </div>
   </div>
-  <div class="card" id="sellerCard" style="display:none"><div class="label">Vendedor (gestor/adm)</div><select id="seller"></select></div>
-</div>
 
-<div class="card" style="margin-top:12px" id="summary"></div>
-<div class="card" style="margin-top:12px">
-  <div class="value">Cards clicáveis</div><div class="small">Ativo / Em negociação / Sem interesse por produto.</div>
-  <div id="cards" class="grid2" style="margin-top:12px"></div>
-</div>
-</div>
-<div class="toast" id="toast"></div>
-<script type="module">
-import { sb } from "./assets/supabaseClient.js";
-import { ensureProfile, logout, toast, BRL, periodStart } from "./assets/app.js";
-const el=(id)=>document.getElementById(id);
-const ctx=await ensureProfile(); if(!ctx) throw new Error("no session");
-const {user, prof}=ctx;
-el("who").textContent=`${prof.nome||user.email} • ${prof.role}`;
-el("btnLogout").addEventListener("click",(e)=>{e.preventDefault();logout();});
+  <div class="toast" id="toast"></div>
 
-const products=["vegaspay","agregados","cartoes","credenciamento","clube"];
-const stLabel={ativo:"Ativo",negociacao:"Em negociação",sem_interesse:"Sem interesse"};
-const pLabel=(p)=>p==="vegaspay"?"Vegas Pay":p==="agregados"?"Agregados":p==="cartoes"?"Cartões":p==="credenciamento"?"Credenciamento":"Clube Vantagens";
+  <script type="module">
+    // Cache-buster pra acabar com JS antigo preso no navegador/GitHub Pages
+    import { sb } from "./assets/supabaseClient.js?v=20260108";
+    import { ensureProfile, logout, toast, BRL, periodStart } from "./assets/app.js?v=20260108";
 
-async function loadSellers(){
-  const {data,error}=await sb.from("profiles").select("id,nome,role").in("role",["vendedor","gestor"]).order("nome");
-  if(error){toast("Erro vendedores");return [];} return data||[];
-}
-async function queryActions(){
-  const start=periodStart(el("period").value).toISOString();
-  let q=sb.from("actions").select("produto,status,volume,user_id").gte("updated_at",start);
-  if(prof.role==="vendedor") q=q.eq("user_id", user.id);
-  else if(el("seller").value) q=q.eq("user_id", el("seller").value);
-  const {data,error}=await q; if(error){toast("Erro: "+error.message); return [];} return data||[];
-}
-function card(prod,status,list){
-  const total=list.length, volume=list.reduce((a,b)=>a+(Number(b.volume)||0),0);
-  const seller=el("seller")?.value||"";
-  const href=`negociacoes.html?period=${encodeURIComponent(el("period").value)}&produto=${prod}&status=${status}&seller=${encodeURIComponent(seller)}`;
-  return `<a class="card" href="${href}" style="padding:12px;text-decoration:none">
-    <div class="row" style="border-top:none;padding:0">
-      <div><div class="value">${pLabel(prod)}</div><div class="small">${stLabel[status]}</div></div>
-      <div style="text-align:right"><div class="value">${total}</div><div class="small">${BRL(volume)}</div></div>
-    </div></a>`;
-}
-async function render(){
-  const list=await queryActions();
-  const vol=list.reduce((a,b)=>a+(Number(b.volume)||0),0);
-  el("summary").innerHTML=`<div class="row" style="border-top:none;padding:0">
-    <div><div class="label">Registros</div><div class="value">${list.length}</div></div>
-    <div style="text-align:right"><div class="label">Volume</div><div class="value">${BRL(vol)}</div></div>
-  </div>`;
-  const out=[];
-  for(const prod of products){
-    for(const st of ["ativo","negociacao","sem_interesse"]){
-      out.push(card(prod,st,list.filter(x=>x.produto===prod && x.status===st)));
+    const el = (id) => document.getElementById(id);
+
+    let ctx;
+    try {
+      ctx = await ensureProfile();
+    } catch (e) {
+      console.error(e);
+      toast("Falha ao carregar perfil. Veja o console (F12) pra detalhes.");
+      throw e;
     }
-  }
-  el("cards").innerHTML=out.join("");
-}
-if(prof.role!=="vendedor"){
-  el("sellerCard").style.display="block";
-  const sellers=await loadSellers();
-  el("seller").innerHTML=`<option value="">Todos</option>`+sellers.map(s=>`<option value="${s.id}">${s.nome||s.id}</option>`).join("");
-  const params=new URLSearchParams(location.search); if(params.get("seller")) el("seller").value=params.get("seller");
-  el("seller").addEventListener("change", render);
-}
-el("period").addEventListener("change", render);
-await render();
-</script></body></html>
+    if (!ctx) throw new Error("no session");
+
+    const { user, prof } = ctx;
+
+    el("who").textContent = `${prof.nome || user.email} • ${prof.role}`;
+    el("btnLogout").addEventListener("click", (e) => { e.preventDefault(); logout(); });
+
+    const products = ["vegaspay","agregados","cartoes","credenciamento","clube"];
+    const stLabel = { ativo:"Ativo", negociacao:"Em negociação", sem_interesse:"Sem interesse" };
+    const pLabel = (p) =>
+      p==="vegaspay" ? "Vegas Pay" :
+      p==="agregados" ? "Agregados" :
+      p==="cartoes" ? "Cartões" :
+      p==="credenciamento" ? "Credenciamento" :
+      "Clube Vantagens";
+
+    async function loadSellers() {
+      // ✅ CORRIGIDO: profiles2 (oficial)
+      const { data, error } = await sb
+        .from("profiles2")
+        .select("id,nome,role")
+        .in("role", ["vendedor","gestor","adm"])
+        .order("nome");
+
+      if (error) {
+        console.error(error);
+        toast("Erro ao carregar vendedores (verifique RLS da profiles2).");
+        return [];
+      }
+      return data || [];
+    }
+
+    async function queryActions() {
+      const start = periodStart(el("period").value).toISOString();
+      let q = sb
+        .from("actions")
+        .select("produto,status,volume,user_id")
+        .gte("updated_at", start);
+
+      if (prof.role === "vendedor") q = q.eq("user_id", user.id);
+      else if (el("seller").value) q = q.eq("user_id", el("seller").value);
+
+      const { data, error } = await q;
+      if (error) {
+        console.error(error);
+        toast("Erro ao carregar ações: " + error.message);
+        return [];
+      }
+      return data || [];
+    }
+
+    function card(prod, status, list) {
+      const total = list.length;
+      const volume = list.reduce((a, b) => a + (Number(b.volume) || 0), 0);
+
+      const seller = el("seller")?.value || "";
+      const href = `negociacoes.html?period=${encodeURIComponent(el("period").value)}&produto=${prod}&status=${status}&seller=${encodeURIComponent(seller)}`;
+
+      return `<a class="card" href="${href}" style="padding:12px;text-decoration:none">
+        <div class="row" style="border-top:none;padding:0">
+          <div>
+            <div class="value">${pLabel(prod)}</div>
+            <div class="small">${stLabel[status]}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="value">${total}</div>
+            <div class="small">${BRL(volume)}</div>
+          </div>
+        </div>
+      </a>`;
+    }
+
+    async function render() {
+      const list = await queryActions();
+      const vol = list.reduce((a, b) => a + (Number(b.volume) || 0), 0);
+
+      el("summary").innerHTML = `<div class="row" style="border-top:none;padding:0">
+        <div>
+          <div class="label">Registros</div>
+          <div class="value">${list.length}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="label">Volume</div>
+          <div class="value">${BRL(vol)}</div>
+        </div>
+      </div>`;
+
+      const out = [];
+      for (const prod of products) {
+        for (const st of ["ativo","negociacao","sem_interesse"]) {
+          out.push(card(prod, st, list.filter(x => x.produto === prod && x.status === st)));
+        }
+      }
+      el("cards").innerHTML = out.join("");
+    }
+
+    if (prof.role !== "vendedor") {
+      el("sellerCard").style.display = "block";
+
+      const sellers = await loadSellers();
+      el("seller").innerHTML =
+        `<option value="">Todos</option>` +
+        sellers.map(s => `<option value="${s.id}">${s.nome || s.id}</option>`).join("");
+
+      const params = new URLSearchParams(location.search);
+      if (params.get("seller")) el("seller").value = params.get("seller");
+
+      el("seller").addEventListener("change", render);
+    }
+
+    el("period").addEventListener("change", render);
+    await render();
+  </script>
+</body>
+</html>
